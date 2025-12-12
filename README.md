@@ -17,10 +17,19 @@
 - [Enums Utilizadas no Sistema](#enums-utilizadas-no-sistema)
 
 ## Integrantes da Equipe
-- Carlos Anderson Dos Santos De Souza  
-- Holivane Pessoa Holanda Cabrini  
-- Sara Ferreira de Araújo  
+- Carlos Anderson Dos Santos De Souza:
+  * Modelagem e implementação de *Catalogo* e *ListaPersonalizada*  
+  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)  
 
+- Holivane Pessoa Holanda Cabrini:
+  - Modelagem e implementação de *Usuario* e *RegistroHistorico*  
+  - Implementação de métodos de avaliação, marcação de assistido e cálculo de médias  
+  - Validações de dados  
+
+- Sara Ferreira de Araújo:
+  * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio*  
+  * Desenvolvimento da *API FastAPI / CLI*  
+  * Integração com *persistência (SQLite/JSON)*
 
 # Principais Classes do Projeto (UML Textual)
 
