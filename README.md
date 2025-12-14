@@ -1,6 +1,17 @@
 <p align="center"> <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Bras%C3%A3o_UFCA_em_Alta_Defini%C3%A7%C3%A3o.svg" alt="Logo UFCA" width="200"> </p>
 
-# 🎬 Projeto POO – CATÁLOGO DE FILMES E SÉRIES
+# 🎬 Projeto POO – CATÁLOGO DE FILMES E SÉRIES - (TEMA 10)
+Sistema de **API mínima** para gerenciar um **Catálogo pessoal de filmes e séries**, com:
+- Avaliações,
+- Status de visualização,
+- Temporadas/episódios,
+- Histórico e
+- Relatórios de consumo de mídia.
+
+O sistema permite acompanhar o progresso de séries e comparar avaliações entre mídias. 
+
+Persistência simples (em JSON ou SQLite)
+Modelagem orientada a objetos (herança, encapsulamento, validações e composição).
 
 ## Sumário
 - [Integrantes da Equipe](#integrantes-da-equipe)
@@ -28,7 +39,7 @@
 
 - Sara Ferreira de Araújo:
   * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio*  
-  * Desenvolvimento da *API FastAPI / CLI*  
+  * Desenvolvimento da *API FastAPI / CLI* 
   * Integração com *persistência (SQLite/JSON)*
 
 # Principais Classes do Projeto (UML Textual)
@@ -242,4 +253,6 @@ Os métodos `avaliar`, `marcar_assistido` e `calcular_media` são **sobrescritos
 - 16  
 - 18  
 
+## 🔗 Referência Principal do Projeto (Link para o Arquivo Base)
+**Arquivo Base:** https://docs.google.com/document/d/1Grv7dnrhYA3PhTxRSJIqgxM-UFbGesNb/edit
 
