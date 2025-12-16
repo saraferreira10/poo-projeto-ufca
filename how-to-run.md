@@ -24,58 +24,12 @@ venv\Scripts\activate
 
 ## 3️⃣ Instalar Dependências
 
-Se houver `requirements.txt`:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Exemplo mínimo de `requirements.txt`:
-
-```
-fastapi==0.124.4
-uvicorn==0.38.0
-sqlmodel==0.0.27
-```
-
-Se não houver, instale manualmente:
-
-```bash
-pip install fastapi uvicorn sqlmodel
-```
-
----
-
-## 4️⃣ Criar o Banco de Dados
-
-No SQLite + SQLModel, crie o banco e as tabelas.
-
-Exemplo `database.py`:
-
-```python
-from sqlmodel import SQLModel, create_engine
-from app.models.filme import Filme
-# outros modelos
-
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-engine = create_engine(sqlite_url, echo=True)
-
-def criar_tabelas():
-    SQLModel.metadata.create_all(engine)
-```
-
-Você pode criar as tabelas diretamente:
-
-```bash
-python -m app.db.database
-```
-
-Ou usando a **lifespan** do FastAPI que cria na inicialização.
-
----
-
-## 5️⃣ Rodar a API
+## 4️⃣ Rodar a API
 
 Use **Uvicorn** para iniciar a API:
 
@@ -94,7 +48,7 @@ http://127.0.0.1:8000
 
 ---
 
-## 6️⃣ Testar a API
+## 5️⃣ Testar a API
 
 O FastAPI cria documentação interativa:
 
@@ -108,27 +62,34 @@ Exemplo de endpoints:
 
 ---
 
-## 7️⃣ Estrutura do Projeto
+## 6️⃣ Estrutura do Projeto
 
 ```
-app/
-├── main.py            # Inicializa FastAPI
+poo-projeto-ufca/
+├── main.py                # Inicializa FastAPI e inclui rotas
 ├── db/
-│   ├── database.py    # Engine e criar_tabelas()
+│   ├── database.py        # Criação de conexão e tabelas SQLite
+│   ├── seed.py            # Inserção de dados iniciais
+│   └── crud/
+│       ├── filmes.py      # Funções CRUD de filmes
+│       ├── series.py      # Funções CRUD de séries
+│       ├── temporadas.py  # Funções CRUD de temporadas
+│       └── episodios.py   # Funções CRUD de episódios
 ├── models/
+│   ├── midia.py
 │   ├── filme.py
 │   ├── serie.py
-│   ├── episodio.py
+│   ├── temporada.py
+│   └── episodio.py
 ├── routes/
-│   ├── filmes.py
-│   ├── series.py
+│   ├── filmes_routes.py
+│   └── series_routes.py
 ```
 
-## 8️⃣ Resumo Passo a Passo
+## 7️⃣ Resumo Passo a Passo
 
 1. Clonar e acessar o diretório do projeto
 2. Criar e ativar ambiente virtual
 3. Instalar dependências (`requirements.txt`)
-4. Criar banco de dados/tabelas
-5. Rodar API com `uvicorn`
-6. Testar endpoints pelo Swagger UI ou ReDoc
+4. Rodar API com `uvicorn`
+5. Testar endpoints pelo Swagger UI ou ReDoc

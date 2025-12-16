@@ -1,10 +1,11 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.db.database import create_db_and_tables
+
+from app.db.dados import criar_tabelas
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    create_db_and_tables()
+    criar_tabelas()
     yield
 
 app = FastAPI(title="The Catalog API", lifespan=lifespan)
