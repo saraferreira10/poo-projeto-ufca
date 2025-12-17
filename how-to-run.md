@@ -1,4 +1,4 @@
-# 🎬 Como Rodar o Projeto – Catálogo de Filmes e Séries (FastAPI + SQLModel + SQLite)
+# 🎬 Como Rodar o Projeto – Catálogo de Filmes e Séries
 
 ## 1️⃣ Clonar o Projeto
 ```
@@ -66,24 +66,22 @@ Exemplo de endpoints:
 
 ```
 poo-projeto-ufca/
-├── main.py                # Inicializa FastAPI e inclui rotas
-├── db/
-│   ├── database.py        # Criação de conexão e tabelas SQLite
-│   ├── seed.py            # Inserção de dados iniciais
-│   └── crud/
-│       ├── filmes.py      # Funções CRUD de filmes
-│       ├── series.py      # Funções CRUD de séries
-│       ├── temporadas.py  # Funções CRUD de temporadas
-│       └── episodios.py   # Funções CRUD de episódios
-├── models/
-│   ├── midia.py
-│   ├── filme.py
-│   ├── serie.py
-│   ├── temporada.py
-│   └── episodio.py
-├── routes/
-│   ├── filmes_routes.py
-│   └── series_routes.py
+├── app/
+│   ├── main.py
+│   ├── db/  # Contém tudo relacionado à persistência de dados (SQLite)
+│   │   └── dados.py
+│   ├── models/  # Contém as classes do domínio (POO)
+│   │   ├── midia.py
+│   │   ├── filme.py
+│   │   ├── serie.py
+│   │   ├── temporada.py
+│   │   └── episodio.py
+│   ├── crud/ # Contém funções de CRUD para cada model, responsáveis por interagir com o banco
+│   │   └── midia_crud.py
+│   ├── dto/ # Contém schemas Pydantic para validação de dados enviados/recebidos pela API
+│   │   └── midia_dto.py
+│   └── routes/ # Contém os endpoints da API
+│       └── midia_routes.py
 ```
 
 ## 7️⃣ Resumo Passo a Passo
