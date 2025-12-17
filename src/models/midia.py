@@ -57,7 +57,7 @@ class Midia(ABC):
     @tipo.setter
     def tipo(self, valor: TipoMidia) -> None:
         if not isinstance(valor, TipoMidia):
-            raise ValueError("O tipo deve ser um membro da Enum TipoMidia.")  
+            raise ValueError("O tipo deve ser um membro da Enum TipoMidia.")
         self._tipo = valor
 
     # GENERO
@@ -131,7 +131,11 @@ class Midia(ABC):
     @abstractmethod
     def avaliar(self, nota: float) -> None:
         pass
-    
+
+    @abstractmethod
+    def calcular_media(self) -> float:
+        pass
+
     # --- MÉTODOS ESPECIAIS ---
     def __str__(self) -> str:
         return (
