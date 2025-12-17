@@ -17,6 +17,7 @@ class Midia(ABC):
         elenco: str,
     ):
         # DEFINIÇÃO DOS ATRIBUTOS PRIVADOS
+        self._id = None
         self._titulo = None
         self._tipo = None
         self._genero = None
@@ -38,6 +39,15 @@ class Midia(ABC):
         self.elenco = elenco
 
     # --- GETTERS E SETTERS ---
+    # ID
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, valor):
+        self._id = valor
+
     # TITULO
     @property
     def titulo(self) -> str:
@@ -122,6 +132,11 @@ class Midia(ABC):
     @property
     def nota(self) -> float:
         return self._nota
+
+    # CONCLUÍDO EM
+    @property
+    def concluido_em(self):
+        return self._concluido_em
 
     # --- MÉTODOS ABSTRATOS ---
     @abstractmethod
