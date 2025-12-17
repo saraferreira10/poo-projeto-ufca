@@ -11,24 +11,52 @@ def criar_tabelas():
     conn = get_connection()
     cursor = conn.cursor()
 
+    # ------------------------
+    # Tabela Midia
+    # ------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS midia (
-        id TEXT PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         tipo TEXT NOT NULL,
         titulo TEXT NOT NULL,
         genero TEXT,
-        status TEXT,
-        elenco TEXT,
+        ano INTEGER,
+        duracao INTEGER,
         classificacao TEXT,
+        elenco TEXT,
+        status TEXT,
+        concluido_em TEXT,
         nota INTEGER DEFAULT 0
     )
     """)
 
+    # ------------------------
+    # Tabela Temporada
+    # ------------------------
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS filmes (
-        id TEXT PRIMARY KEY,
+    CREATE TABLE IF NOT EXISTS temporadas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        midia_id INTEGER NOT NULL,
+        numero INTEGER NOT NULL,
+        FOREIGN KEY(midia_id) REFERENCES midia(id) ON DELETE CASCADE
+    )
+    """)
+
+    # ------------------------
+    # Tabela Episodio
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS episodios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        temporada_id INTEGER NOT NULL,
+        numero INTEGER NOT NULL,
+        titulo TEXT NOT NULL,
         duracao INTEGER NOT NULL,
-        FOREIGN KEY(id) REFERENCES midia(id) ON DELETE CASCADE
+        data_lancamento TEXT,
+        status TEXT,
+        nota INTEGER DEFAULT 0,
+        concluido_em TEXT,
+        FOREIGN KEY(temporada_id) REFERENCES temporadas(id) ON DELETE CASCADE
     )
     """)
 
