@@ -29,11 +29,10 @@ Modelagem orientada a objetos (herança, encapsulamento, validações e composi�
 
 ## Integrantes da Equipe
 - Carlos Anderson Dos Santos De Souza:
-  * Modelagem e implementação de *Catalogo* e *ListaPersonalizada*  
   * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)  
 
 - Holivane Pessoa Holanda Cabrini:
-  - Modelagem e implementação de *Usuario* e *RegistroHistorico*  
+  - Modelagem e implementação de *Usuario*, *Catalogo*, *ListaPersonalizada* e *RegistroHistorico*  
   - Implementação de métodos de avaliação, marcação de assistido e cálculo de médias  
   - Validações de dados  
 
