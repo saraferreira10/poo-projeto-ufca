@@ -257,7 +257,7 @@ Os métodos `avaliar`, `marcar_assistido` e `calcular_media` são **sobrescritos
 
 ## Conhecimento adquirido para debate e melhorias
 
-1. Dentro de cada pasta `src`, `db`, `enum`, deve existir um arquivo vazio chamado __init__.py que avisa ao python que são pacotes e permite que as classes sejam importadas entre si.
+Dentro de cada pasta `src`, `db`, `enum`, deve existir um arquivo vazio chamado __init__.py que avisa ao python que são pacotes e permite que as classes sejam importadas entre si.
 
 ### Mensagem de commit
 As mensagens de commit podem ser organizadas seguindo uma estrutura básica:
@@ -280,4 +280,42 @@ As mensagens de commit podem ser organizadas seguindo uma estrutura básica:
 - **ci:** Mudanças em CI/CD
 - **build:** Mudanças no sistema de build
 - **revert:** Reverter um commit anterior
+
+
+### Ferramentas
+
+Para baixar o CLI na sua máquina e poder utilizar você pode precisar usar algumas ferramentas:
+
+#### tree
+comando utilitário de terminal que exibe o conteúdo de um diretório em um formato de árvore gráfica. Ele é extremamente útil para visualizar a hierarquia de pastas e arquivos de um projeto de programação
+
+```bash
+# No Ubuntu/WSL
+sudo apt install tree
+
+# No Mac
+brew install tree
+```
+Usar
+
+```bash
+# Árvore completa
+tree
+
+# Limitar níveis de profundidade
+tree -L 2        # Apenas 2 níveis
+
+# Apenas diretórios (sem arquivos)
+tree -d
+
+# Ignorar node_modules, .git, etc
+tree -I 'node_modules|.git|__pycache__'
+```
+
+### SQLite
+Veifiquie se tem o SQLite3 instalado
+
+```bash
+sqlite3 --version
+```
 
