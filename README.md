@@ -319,3 +319,10 @@ Veifiquie se tem o SQLite3 instalado
 sqlite3 --version
 ```
 
+Instalação
+
+```bash
+sudo apt update
+sudo apt install sqlite3
+```
+
