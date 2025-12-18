@@ -1,13 +1,12 @@
+from src.models.historical_record import HistoricalRecord
+
 # --- USUÁRIO ---
-from os import name
-
-
 class User():
     def __init__(
         self, 
         name: str, 
         email: str, 
-       # historical_record: HistoricalRecord
+        historical_record: HistoricalRecord
     ):
 
         self._id = None
