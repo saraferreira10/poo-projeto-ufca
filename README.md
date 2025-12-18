@@ -348,3 +348,23 @@ SELECT COUNT(*) FROM midia;
 -- Sair
 .quit
 ```
+
+### 📂 Estrutura do Projeto
+```text
+```
+
+### 🚀 Como Rodar
+1. **Clone o repositório:**
+```bash
+git clone https://github.com/saraferreira10/poo-projeto-ufca.git
+```
+
+2. **Entre na pasta:**
+```bash
+cd POO-PROJETO-UFCA
+```
+
+3. **Execute o projeto:**
+```bash
+python main.py
+```
