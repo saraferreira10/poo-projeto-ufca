@@ -38,8 +38,8 @@ Modelagem orientada a objetos (herança, encapsulamento, validações e composi�
 
 - Sara Ferreira de Araújo:
   * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio*  
-  * Desenvolvimento da *API FastAPI / CLI* 
-  * Integração com *persistência (SQLite/JSON)*
+  * Desenvolvimento da *CLI* 
+  * Integração com *persistência SQLite*
 
 # Principais Classes do Projeto (UML Textual)
 
