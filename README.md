@@ -319,10 +319,32 @@ Veifiquie se tem o SQLite3 instalado
 sqlite3 --version
 ```
 
-Instalação
+#### 1. Instalação
 
 ```bash
 sudo apt update
 sudo apt install sqlite3
 ```
 
+#### 2. Modo interativo
+```bash
+sqlite3 catalogo.db
+```
+
+####  3. Comandos úteis
+```sql
+-- Ver as tabelas
+.tables
+
+-- Ver estrutura da tabela midia
+.schema midia
+
+-- Consultar dados
+SELECT * FROM midia;
+
+-- Contar registros
+SELECT COUNT(*) FROM midia;
+
+-- Sair
+.quit
+```
