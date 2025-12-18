@@ -255,3 +255,29 @@ Os métodos `avaliar`, `marcar_assistido` e `calcular_media` são **sobrescritos
 ## 🔗 Referência Principal do Projeto (Link para o Arquivo Base)
 **Arquivo Base:** https://docs.google.com/document/d/1Grv7dnrhYA3PhTxRSJIqgxM-UFbGesNb/edit
 
+## Conhecimento adquirido para debate e melhorias
+
+1. Dentro de cada pasta `src`, `db`, `enum`, deve existir um arquivo vazio chamado __init__.py que avisa ao python que são pacotes e permite que as classes sejam importadas entre si.
+
+### Mensagem de commit
+As mensagens de commit podem ser organizadas seguindo uma estrutura básica:
+
+ `escopo: descrição`
+
+`[corpo opcional]`
+
+
+#### Tipos Principais
+- **feat**: Nova funcionalidade
+- **fix:** Correção de bug
+
+- **docs:** Mudanças na documentação
+- **style:** Formatação, espaços, ponto e vírgula -(sem mudança de código)
+- **refactor:** Refatoração de código (sem -0adicionar funcionalidade ou corrigir bug)
+- **test:** Adição ou correção de testes
+- **chore:** Tarefas de build, configurações, -dependências
+- **perf:** Melhorias de performance
+- **ci:** Mudanças em CI/CD
+- **build:** Mudanças no sistema de build
+- **revert:** Reverter um commit anterior
+
