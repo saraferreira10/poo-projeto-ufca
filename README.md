@@ -29,21 +29,24 @@ Modelagem orientada a objetos (herança, encapsulamento, validações e composi�
 
 ## Integrantes da Equipe
 - Carlos Anderson Dos Santos De Souza:
-  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)  
 
 - Holivane Pessoa Holanda Cabrini:
-  - Modelagem e implementação de *Usuario*, *Catalogo*, *ListaPersonalizada* e *RegistroHistorico*  
-  - Implementação de métodos de avaliação, marcação de assistido e cálculo de médias  
-  - Validações de dados  
+  * Desenvolvimento da *CLI*
+  * Documentação
+  * Implementação de métodos de avaliação, marcação de assistido e cálculo de médias  
+  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)
+  * Modelagem e implementação de *Usuario*, *Catalogo*, *ListaPersonalizada* e *RegistroHistorico*  
+  * Validações de dados  
 
 - Sara Ferreira de Araújo:
-  * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio*  
   * Desenvolvimento da *CLI* 
+  * Documentação
   * Integração com *persistência SQLite*
+  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)
+  * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio* 
+  * Organização do projeto e divisão das tarefas 
 
 # Principais Classes do Projeto (UML Textual)
-
----
 
 ### **Usuario**
 **Classe:** Usuario  
