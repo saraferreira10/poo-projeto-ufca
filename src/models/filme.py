@@ -1,36 +1,59 @@
-from datetime import datetime
-from src.enums.enums import StatusVisualizacao, TipoMidia
 from src.models.midia import Midia
+from src.enums.enums import TipoMidia, Genero, Classificacao
 
 
-# --- FILME ---
 class Filme(Midia):
-    # ---  MÉTODO CONSTRUTOR ---
-    def __init__(self, titulo, genero, ano, duracao, classificacao, elenco):
-        super().__init__(
-            titulo, TipoMidia.FILME, genero, ano, duracao, classificacao, elenco
-        )
+    """
+    Representa uma mídia do tipo Filme no sistema.
+
+    Diferente das séries, o filme possui uma duração fixa em minutos
+    armazenada diretamente no banco de dados.
+
+    Attributes:
+        titulo (str): Título do filme.
+        genero (Genero): Gênero do filme.
+        ano (int): Ano de lançamento.
+        duracao (int): Duração total em minutos.
+        classificacao (Classificacao): Classificação indicativa.
+        elenco (str): String simples com o nome dos atores.
+    """
+
+    def __init__(
+        self,
+        titulo: str,
+        genero: Genero,
+        ano: int,
+        duracao: int,
+        classificacao: Classificacao,
+        elenco: str,
+    ):
+        self._duracao_fixa = duracao
+        super().__init__(titulo, TipoMidia.FILME, genero, ano, classificacao, elenco)
 
     # --- IMPLEMENTAÇÃO DOS MÉTODOS ABSTRATOS ---
-    def marcar_assistido(self) -> None:
-        self._status = StatusVisualizacao.ASSISTIDO
-        self._concluido_em = datetime.now()
-        print(
-            f"O filme '{self.titulo}' foi marcado como assistido em {self._concluido_em.strftime('%d/%m/%Y')}."
-        )
 
-    def avaliar(self, nota: float) -> None:
-        if not (0 <= nota <= 10):
-            raise ValueError("A nota deve estar entre 0 e 10.")
+    @property
+    def duracao(self) -> int:
+        """Retorna a duração fixa do filme (em minutos)."""
+        return self._duracao_fixa
 
-        self._nota = float(nota)
-        print(f"Filme '{self.titulo}' avaliado com nota {self._nota}.")
+    @duracao.setter
+    def duracao(self, valor: int):
+        if valor <= 0:
+            raise ValueError(
+                "A duração do filme deve ser um valor positivo em minutos."
+            )
+        self._duracao_fixa = valor
 
     def calcular_media(self) -> float:
-        return self.nota
+        """
+        Calcula a média de avaliações do filme.
+        """
+        # TODO: implementar lógica de cálculo da média a partir 
+        return 0.0
 
-    # DEMAIS MÉTODOS
-    def iniciar_visualizacao(self) -> None:
-        self._status = StatusVisualizacao.ASSISTINDO
-        print(f"Começou a ver: {self.titulo}")
-
+    def __len__(self) -> int:
+        """
+        Para Filmes, o tamanho da mídia é representada pela sua duração em minutos.
+        """
+        return self.duracao

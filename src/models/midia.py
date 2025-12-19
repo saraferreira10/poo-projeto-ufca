@@ -1,51 +1,66 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from src.enums.enums import Classificacao, Genero, StatusVisualizacao, TipoMidia
+from typing import Optional
+from src.enums.enums import Classificacao, Genero, TipoMidia
 
 
-# --- MIDIA ---
 class Midia(ABC):
-    # ---  MÉTODO CONSTRUTOR ---
+    """
+    Representação abstrata de uma mídia para o catálogo.
+
+    Esta classe define a interface e o comportamento comum para todas as mídias,
+    garantindo que atributos obrigatórios sejam validados antes da inserção
+    no banco de dados SQLite.
+
+    Attributes:
+        id (Optional[int]): Identificador único gerado pelo banco de dados.
+        titulo (str): Título da mídia.
+        tipo (TipoMidia): Categoria da mídia (Filme ou Série).
+        genero (Genero): Gênero cinematográfico.
+        ano (int): Ano de lançamento.
+        classificacao (Classificacao): Classificação indicativa.
+        elenco (str): Texto contendo o nome dos atores.
+    """
+
     def __init__(
         self,
         titulo: str,
         tipo: TipoMidia,
         genero: Genero,
         ano: int,
-        duracao: int,
         classificacao: Classificacao,
         elenco: str,
     ):
-        # DEFINIÇÃO DOS ATRIBUTOS PRIVADOS
-        self._id = None
-        self._titulo = None
-        self._tipo = None
-        self._genero = None
-        self._ano = None
-        self._duracao = None
-        self._classificacao = None
-        self._elenco = None
-        self._status = StatusVisualizacao.NAO_ASSISTIDO
-        self._concluido_em = None
-        self._nota = 0.0
+        self._id: Optional[int] = None
 
-        # VALIDAÇÃO COM SETTER
+        # Atributos privados tipados
+        self._titulo: str
+        self._tipo: TipoMidia
+        self._genero: Genero
+        self._ano: int
+        self._classificacao: Classificacao
+        self._elenco: str
+
+        # Inicialização com validação via setters
         self.titulo = titulo
         self.tipo = tipo
         self.genero = genero
         self.ano = ano
-        self.duracao = duracao
         self.classificacao = classificacao
         self.elenco = elenco
 
-    # --- GETTERS E SETTERS ---
+    # --- PROPRIEDADES (GETTERS E SETTERS) ---
+
     # ID
     @property
-    def id(self):
+    def id(self) -> Optional[int]:
+        """Retorna o ID da mídia ou None se não persistido."""
         return self._id
 
     @id.setter
-    def id(self, valor):
+    def id(self, valor: int):
+        if valor <= 0:
+            raise ValueError("O ID deve ser um número inteiro positivo.")
         self._id = valor
 
     # TITULO
@@ -54,31 +69,33 @@ class Midia(ABC):
         return self._titulo
 
     @titulo.setter
-    def titulo(self, valor: str) -> None:
+    def titulo(self, valor: str):
         if not valor or not valor.strip():
-            raise ValueError("Título não pode ser vazio.")
+            raise ValueError("O título é obrigatório.")
         self._titulo = valor.strip()
 
     # TIPO
     @property
     def tipo(self) -> str:
+        """Retorna o valor textual do TipoMidia."""
         return self._tipo.value
 
     @tipo.setter
-    def tipo(self, valor: TipoMidia) -> None:
+    def tipo(self, valor: TipoMidia):
         if not isinstance(valor, TipoMidia):
-            raise ValueError("O tipo deve ser um membro da Enum TipoMidia.")
+            raise ValueError("O valor deve ser um membro da Enum TipoMidia.")
         self._tipo = valor
 
     # GENERO
     @property
     def genero(self) -> str:
+        """Retorna o valor textual do Gênero."""
         return self._genero.value
 
     @genero.setter
-    def genero(self, valor: Genero) -> None:
+    def genero(self, valor: Genero):
         if not isinstance(valor, Genero):
-            raise ValueError("Gênero inválido. Use a Enum Genero.")
+            raise ValueError("O valor deve ser um membro da Enum Genero.")
         self._genero = valor
 
     # ANO
@@ -87,31 +104,24 @@ class Midia(ABC):
         return self._ano
 
     @ano.setter
-    def ano(self, valor: int) -> None:
-        if not (1888 <= valor <= datetime.now().year + 5):
-            raise ValueError("Ano fora do intervalo permitido.")
+    def ano(self, valor: int):
+        limite_superior = datetime.now().year + 5
+        if not (1888 <= valor <= limite_superior):
+            raise ValueError(
+                f"Ano inválido. Deve estar entre 1888 e {limite_superior}."
+            )
         self._ano = valor
-
-    # DURAÇÃO
-    @property
-    def duracao(self) -> int:
-        return self._duracao
-
-    @duracao.setter
-    def duracao(self, valor: int) -> None:
-        if valor <= 0:
-            raise ValueError("Duração deve ser positiva.")
-        self._duracao = valor
 
     # CLASSIFICAÇÃO
     @property
     def classificacao(self) -> str:
+        """Retorna o valor textual da Classificação."""
         return self._classificacao.value
 
     @classificacao.setter
-    def classificacao(self, valor: Classificacao) -> None:
+    def classificacao(self, valor: Classificacao):
         if not isinstance(valor, Classificacao):
-            raise ValueError("Classificação deve ser um membro da Enum Classificacao.")
+            raise ValueError("O valor deve ser um membro da Enum Classificacao.")
         self._classificacao = valor
 
     # ELENCO
@@ -120,71 +130,60 @@ class Midia(ABC):
         return self._elenco
 
     @elenco.setter
-    def elenco(self, valor: str) -> None:
-        self._elenco = valor
-
-    # STATUS
-    @property
-    def status(self) -> str:
-        return self._status.value
-
-    # NOTA
-    @property
-    def nota(self) -> float:
-        return self._nota
-
-    # CONCLUÍDO EM
-    @property
-    def concluido_em(self):
-        return self._concluido_em
+    def elenco(self, valor: str):
+        """Armazena o elenco como string simples ou vazia se for None."""
+        self._elenco = valor.strip() if valor else ""
 
     # --- MÉTODOS ABSTRATOS ---
-    @abstractmethod
-    def marcar_assistido(self) -> None:
-        pass
-
-    @abstractmethod
-    def avaliar(self, nota: float) -> None:
-        pass
 
     @abstractmethod
     def calcular_media(self) -> float:
+        """Calcula a média de notas baseada no RegistroHistorico."""
+        pass
+
+    @property
+    @abstractmethod
+    def duracao(self) -> int:
+        """Retorna a duração total da mídia em minutos."""
+        pass
+
+    @abstractmethod
+    def __len__(self) -> int:
+        """Retorna a métrica de tamanho da mídia (minutos ou episódios)."""
         pass
 
     # --- MÉTODOS ESPECIAIS ---
-    def __str__(self) -> str:
-        return (
-            f"--- Detalhes da Mídia ---\n"
-            f"Título: {self.titulo}\n"
-            f"Tipo: {self.tipo}\n"
-            f"Gênero: {self.genero}\n"
-            f"Ano: {self.ano}\n"
-            f"Duração: {self.duracao} min\n"
-            f"Classificação: {self.classificacao}\n"
-            f"Elenco: {self.elenco}\n"
-            f"Status: {self.status}\n"
-            f"Nota: {self.nota:.1f}\n"
-            f"------------------------"
-        )
-
-    def __repr__(self) -> str:
-        return (
-            f"Midia(titulo='{self.titulo}', tipo='{self.tipo}', genero='{self.genero}', "
-            f"ano={self.ano}, duracao={self.duracao}, classificacao='{self.classificacao}', "
-            f"status='{self.status}', nota={self.nota})"
-        )
 
     def __eq__(self, outra: object) -> bool:
+        """Verifica igualdade baseada em título, tipo e ano."""
         if not isinstance(outra, Midia):
             return False
-
         return (
             self.titulo.lower() == outra.titulo.lower()
             and self.tipo == outra.tipo
             and self.ano == outra.ano
         )
 
-    def __lt__(self, outra: object) -> bool:
+    def __hash__(self) -> int:
+        """Gera um hash único para permitir uso em sets e chaves de dict."""
+        return hash((self.titulo.lower(), self.tipo, self.ano))
+
+    def __lt__(self, outra: "Midia") -> bool:
+        """Permite ordenação padrão por título (ordem alfabética)."""
         if not isinstance(outra, Midia):
             return NotImplemented
-        return self.nota < outra.nota
+        return self.titulo.lower() < outra.titulo.lower()
+
+    def __str__(self) -> str:
+        """Formatação amigável para exibição na interface (CLI)."""
+        return f"[{self.tipo}] {self.titulo} ({self.ano}) - Gênero: {self.genero}"
+
+    def __repr__(self) -> str:
+        """Representação técnica detalhada para depuração e log."""
+        return (
+            f"{self.__class__.__name__}("
+            f"id={self.id}, titulo='{self.titulo}', tipo='{self.tipo}', "
+            f"genero='{self.genero}', ano={self.ano}, "
+            f"classificacao='{self.classificacao}', elenco='{self.elenco}'"
+            f")"
+        )
