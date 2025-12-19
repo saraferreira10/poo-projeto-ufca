@@ -58,8 +58,8 @@ class Midia(ABC):
         return self._id
 
     @id.setter
-    def id(self, valor: int):
-        if valor <= 0:
+    def id(self, valor: Optional[int]):
+        if valor is not None and valor <= 0:
             raise ValueError("O ID deve ser um número inteiro positivo.")
         self._id = valor
 
