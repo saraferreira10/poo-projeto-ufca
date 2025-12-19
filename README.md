@@ -13,6 +13,14 @@ O sistema permite acompanhar o progresso de séries e comparar avaliações entr
 Persistência simples (em JSON ou SQLite)
 Modelagem orientada a objetos (herança, encapsulamento, validações e composição).
 
+### Diagrama (em construção)
+<details>
+  <summary>Clique aqui para visualizar o diagrama</summary>
+
+  ![Diagrama de Arquitetura](https://lucid.app/publicSegments/view/487020b6-9370-4baf-a7c8-294ae606d3b7/image.png)
+
+</details>
+
 ## Sumário
 - [Integrantes da Equipe](#integrantes-da-equipe)
 - [Principais Classes do Projeto (UML Textual)](#principais-classes-do-projeto-uml-textual)
@@ -283,7 +291,6 @@ As mensagens de commit podem ser organizadas seguindo uma estrutura básica:
 - **ci:** Mudanças em CI/CD
 - **build:** Mudanças no sistema de build
 - **revert:** Reverter um commit anterior
-
 
 ### Ferramentas
 
