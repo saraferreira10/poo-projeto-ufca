@@ -369,5 +369,5 @@ cd POO-PROJETO-UFCA
 
 3. **Execute o projeto:**
 ```bash
-python main.py
+python3 main.py
 ```
