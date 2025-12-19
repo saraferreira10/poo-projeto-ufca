@@ -4,6 +4,7 @@ DB_FILE = "catalogo.db"
 
 def get_connection():
     conn = sqlite3.connect(DB_FILE)
+    conn.execute("PRAGMA foreign_keys = ON;")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -12,21 +13,18 @@ def criar_tabelas():
     cursor = conn.cursor()
 
     # ------------------------
-    # Tabela Midia
+    # Tabela Mídia
     # ------------------------
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS midia (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tipo TEXT NOT NULL,
+        tipo TEXT NOT NULL,    
         titulo TEXT NOT NULL,
-        genero TEXT,
-        ano INTEGER,
-        duracao INTEGER,
-        classificacao TEXT,
+        genero TEXT NOT NULL,
+        ano INTEGER NOT NULL,
+        classificacao TEXT NOT NULL,
         elenco TEXT,
-        status TEXT,
-        concluido_em TEXT,
-        nota INTEGER DEFAULT 0
+        duracao INTEGER DEFAULT 0
     )
     """)
 
@@ -52,13 +50,25 @@ def criar_tabelas():
         numero INTEGER NOT NULL,
         titulo TEXT NOT NULL,
         duracao INTEGER NOT NULL,
-        data_lancamento TEXT,
-        status TEXT,
-        nota INTEGER DEFAULT 0,
-        concluido_em TEXT,
         FOREIGN KEY(temporada_id) REFERENCES temporadas(id) ON DELETE CASCADE
+    )
+    """)
+
+    # ------------------------
+    # Tabela Avaliação
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS avaliacoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER NOT NULL,
+        midia_id INTEGER NOT NULL,
+        nota INTEGER NOT NULL,
+        comentario TEXT,
+        data_avaliacao TEXT NOT NULL,
+        FOREIGN KEY(midia_id) REFERENCES midia(id) ON DELETE CASCADE
     )
     """)
 
     conn.commit()
     conn.close()
+    print("Banco de dados criado com sucesso.")
