@@ -16,14 +16,13 @@ def main():
         choice = input("\n").strip().lower()
 
         if choice == "0":
-            print("\nEncerrando o sistema... \nSistema encerrado \n \n")
+            Interface.exibir_mensagem_de_saida()
             break
         elif choice == "1":
-            print("-" * 80) 
-            print("Chamar a função que lista o que está cadastrado no catálogo") 
-            print("-" * 80) 
+            Interface.exibir_mensagem_de_todo()
         else:
             print("!!! Opção inválida :( \n Tente novamente")
+            Interface.exibir_mensagem_opcao_invalida(choice)
 
 
 if __name__ == "__main__":
