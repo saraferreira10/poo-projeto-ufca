@@ -16,12 +16,12 @@ class Serie(Midia):
         ano: int,
         classificacao: Classificacao,
         elenco: str,
-        id: int = None,
     ):
         super().__init__(
-            titulo, TipoMidia.SERIE, genero, ano, classificacao, elenco, id
+            titulo, TipoMidia.SERIE, genero, ano, classificacao, elenco
         )
         self._temporadas: List[Temporada] = []
+
 
     # TEMPORADAS
     @property
@@ -33,14 +33,6 @@ class Serie(Midia):
         """Adiciona uma temporada à estrutura da série."""
         if isinstance(temporada, Temporada):
             self._temporadas.append(temporada)
-
-    # DURAÇÃO
-    @property
-    def duracao(self) -> int:
-        """
-        Calcula a duração total somando todas as temporadas.
-        """
-        return sum(t.duracao_total for t in self._temporadas)
 
     # --- IMPLEMENTAÇÃO DOS MÉTODOS ABSTRATOS DE MIDIA ---
     @property
@@ -56,7 +48,7 @@ class Serie(Midia):
         Calcula a média das notas da série.
         """
         # TODO: implementar cálculo de média da série com base em avaliacoes.
-        return 0.0 
+        return 0.0
 
     def __len__(self) -> int:
         """
@@ -67,7 +59,8 @@ class Serie(Midia):
     # --- MÉTODOS ESPECIAIS ---
     def __str__(self) -> str:
         return (
-            f"Série: {self.titulo} | "
+            f"[SÉRIE] {self.titulo} ({self.ano}) - "
+            f"Gênero: {self.genero} | " 
             f"{len(self._temporadas)} Temps | {len(self)} Eps | "
             f"{self.duracao} min"
         )

@@ -1,6 +1,6 @@
 from typing import List
 
-from models.episodio import Episodio
+from src.models.episodio import Episodio
 
 
 class Temporada:
