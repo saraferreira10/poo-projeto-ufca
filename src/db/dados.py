@@ -13,6 +13,16 @@ def criar_tabelas():
     cursor = conn.cursor()
 
     # ------------------------
+    # Tabela Usuário
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE
+    )
+    """)
+
+    # ------------------------
     # Tabela Mídia
     # ------------------------
     cursor.execute("""
@@ -65,10 +75,59 @@ def criar_tabelas():
         nota INTEGER NOT NULL,
         comentario TEXT,
         data_avaliacao TEXT NOT NULL,
-        FOREIGN KEY(midia_id) REFERENCES midia(id) ON DELETE CASCADE
+        FOREIGN KEY(midia_id) REFERENCES midia(id) ON DELETE CASCADE,
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    )
+    """)
+
+    # ------------------------
+    # Tabela Episodio Nota
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS episodio_notas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        episodio_id INTEGER NOT NULL,
+        usuario_id INTEGER NOT NULL,
+        nota INTEGER NOT NULL,
+        FOREIGN KEY(episodio_id) REFERENCES episodios(id) ON DELETE CASCADE,
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    )
+    """)
+
+    # ------------------------
+    # Tabela Visualização de Episódio
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS visualizacoes_episodio (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        episodio_id INTEGER NOT NULL,
+        usuario_id INTEGER NOT NULL,
+        status TEXT NOT NULL,
+        UNIQUE(episodio_id, usuario_id),
+        FOREIGN KEY(episodio_id) REFERENCES episodios(id) ON DELETE CASCADE,
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    )
+    """)
+    
+    # ------------------------
+    # Tabela Visualização de Filme (Midia)
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS visualizacoes_filme (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        midia_id INTEGER NOT NULL,
+        usuario_id INTEGER NOT NULL,
+        status TEXT NOT NULL,
+        data_visualizacao TEXT, 
+        UNIQUE(midia_id, usuario_id),
+        FOREIGN KEY(midia_id) REFERENCES midia(id) ON DELETE CASCADE,
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
     )
     """)
 
     conn.commit()
     conn.close()
     print("Banco de dados criado com sucesso.")
+
+if __name__ == "__main__":
+    criar_tabelas()
