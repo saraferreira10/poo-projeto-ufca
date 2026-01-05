@@ -2,6 +2,7 @@ from src.enums.enums import Genero
 
 
 from src.enums.enums import TipoMidia, Genero, Classificacao
+from src.models.avaliacao import Avaliacao
 from src.models.filme import Filme
 from src.models.serie import Serie
 
@@ -124,3 +125,49 @@ class Interface:
             f"{Interface.LINHA_SIMPLES}"
         )
         print(mensagem)
+
+    # CLI COM SUBCOMANDOS
+    @staticmethod
+    def exibir_ajuda_comandos():
+        print(f"\n{Interface.LINHA_DUPLA}")
+        print(f"{'COMANDOS DISPONÍVEIS'.center(Interface.LARGURA)}")
+        print(f"{Interface.LINHA_DUPLA}")
+        print(" > midia listar")
+        print(" > midia adicionar")
+        print(" > midia avaliar")
+        print(" > midia relatorio top")
+        print(" > serie adicionar-episodio")
+        print(" > serie atualizar-status")
+        print(" > usuario criar-lista")
+        print(" > usuario adicionar-favorito")
+        print(" > sair")
+        print(f"{Interface.LINHA_SIMPLES}")
+
+    @staticmethod
+    def solicitar_dados_avaliacao(midia_id: int, usuario_id: int):
+        """Coleta nota e comentário para avaliar uma mídia."""
+        print(f"\n{Interface.LINHA_SIMPLES}")
+        print(f"{' AVALIAR MÍDIA '.center(Interface.LARGURA, '*')}")
+        
+        try:
+            nota_input = input("Nota (0 a 10): ").strip()
+            if not nota_input:
+                raise ValueError("A nota é obrigatória.")
+            
+            nota = int(nota_input)
+            if not (0 <= nota <= 10):
+                raise ValueError("A nota deve ser entre 0 e 10.")
+            
+            comentario = input("Comentário (opcional): ").strip()
+                        
+            return Avaliacao(
+                usuario_id=usuario_id,
+                midia_id=midia_id,
+                nota=nota,
+                comentario=comentario
+            )
+        except ValueError as e:
+            Interface.exibir_mensagem_erro(f"Entrada inválida: {e}")
+            return None
+
+    
