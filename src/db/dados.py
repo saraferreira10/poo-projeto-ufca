@@ -126,6 +126,31 @@ def criar_tabelas():
     )
     """)
 
+    # ------------------------
+    # Tabela Lista Personalizada
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS listas_personalizadas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER NOT NULL,
+        nome TEXT NOT NULL,
+        FOREIGN KEY(usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    )
+    """)
+
+    # ------------------------
+    # Tabela Itens da Lista 
+    # ------------------------
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS itens_lista (
+        lista_id INTEGER NOT NULL,
+        midia_id INTEGER NOT NULL,
+        PRIMARY KEY (lista_id, midia_id),
+        FOREIGN KEY(lista_id) REFERENCES listas_personalizadas(id) ON DELETE CASCADE,
+        FOREIGN KEY(midia_id) REFERENCES midia(id) ON DELETE CASCADE
+    )
+    """)
+
     conn.commit()
     conn.close()
     print("Banco de dados criado com sucesso.")
