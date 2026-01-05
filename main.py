@@ -1,3 +1,4 @@
+import sqlite3
 from src.dao.midia_dao import MidiaDAO
 from src.dao.avaliacao_dao import AvaliacaoDAO
 from src.dao.usuario_dao import UsuarioDAO
@@ -47,8 +48,13 @@ def main():
                     nova_midia = Interface.solicitar_dados_midia()
                     MidiaDAO.salvar(nova_midia)
                     Interface.exibir_mensagem_sucesso(f"'{nova_midia.titulo}' adicionado.")
-                except Exception as e: Interface.exibir_mensagem_erro(e)
-
+                except sqlite3.IntegrityError:
+                    Interface.exibir_mensagem_erro(
+                        f"A mídia '{nova_midia.titulo}' ({nova_midia.ano}) já está cadastrada!"
+                    )
+                except Exception as e: 
+                    Interface.exibir_mensagem_erro(f"Falha ao salvar: {e}")
+                    
             elif sub == "avaliar":
                 try:
                     midia_id = int(input("ID da mídia para avaliar: "))

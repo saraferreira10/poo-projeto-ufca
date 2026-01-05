@@ -35,7 +35,8 @@ def criar_tabelas():
         ano INTEGER NOT NULL,
         classificacao TEXT NOT NULL,
         elenco TEXT,
-        duracao INTEGER DEFAULT 0
+        duracao INTEGER DEFAULT 0,
+        UNIQUE(titulo, tipo, ano)
     )
     """)
 
