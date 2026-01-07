@@ -1,8 +1,12 @@
 import sqlite3
+from src.dao.episodio_dao import EpisodioDAO
 from src.dao.midia_dao import MidiaDAO
 from src.dao.avaliacao_dao import AvaliacaoDAO
+from src.dao.temporada_dao import TemporadaDAO
 from src.dao.usuario_dao import UsuarioDAO
 from src.db.dados import criar_tabelas
+from src.models.episodio import Episodio
+from src.models.temporada import Temporada
 from src.models.user import User
 from src.utils.interface import Interface
 
@@ -71,9 +75,45 @@ def main():
         elif entrada.startswith("serie "):
             sub = entrada.replace("serie ", "")
             
-            if sub == "adicionar-episodio":
-                Interface.exibir_mensagem_de_todo()
+            if entrada == "serie adicionar-episodio":
+                try:
+                    series = [m for m in MidiaDAO.listar_todos() if m.tipo.upper() == "SERIE"]
+                    if not series:
+                        Interface.exibir_mensagem_erro("Nenhuma série cadastrada.")
+                        continue
 
+                    Interface.exibir_catalogo(series)
+                    midia_id = int(input("\nID da Série: "))
+                    
+                    num_temporada = int(input("Número da Temporada (ex: 1): "))
+                    
+                    
+                    temporadas_da_serie = TemporadaDAO.buscar_por_midia_id(midia_id)
+                    
+                    temp_obj = next((t for t in temporadas_da_serie if t.numero == num_temporada), None)
+
+                    if temp_obj is None:
+                        print(f"⚙️ Temporada {num_temporada} não encontrada. Criando...")
+                        nova_temp = Temporada(numero=num_temporada)
+                        TemporadaDAO.salvar(nova_temp, midia_id)
+                        temp_id = nova_temp.id
+                    else:
+                        temp_id = temp_obj.id
+
+                    dados_ep = Interface.solicitar_dados_episodio()
+                    
+                    novo_episodio = Episodio(
+                        numero=dados_ep['numero'],
+                        titulo=dados_ep['titulo'],
+                        duracao=dados_ep['duracao']
+                    )
+                    
+                    EpisodioDAO.salvar(novo_episodio, temporada_id=temp_id)
+                    
+                    Interface.exibir_mensagem_sucesso(f"Episódio '{dados_ep['titulo']}' salvo com sucesso!")
+
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro ao processar: {e}")
             elif sub == "atualizar-status":
                 Interface.exibir_mensagem_de_todo()
 

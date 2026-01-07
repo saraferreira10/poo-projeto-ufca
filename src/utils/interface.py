@@ -171,3 +171,20 @@ class Interface:
             return None
 
     
+    @staticmethod
+    def solicitar_dados_episodio():
+        """Coleta dados para um novo episódio."""
+        print(f"\n{Interface.LINHA_SIMPLES}")
+        print(f"{' NOVO EPISÓDIO '.center(Interface.LARGURA, '*')}")
+        try:
+            numero = int(input("Número do Episódio: "))
+            titulo = input("Título do Episódio: ").strip()
+            duracao = int(input("Duração (minutos): "))
+            
+            return {
+                "numero": numero,
+                "titulo": titulo,
+                "duracao": duracao
+            }
+        except ValueError:
+            raise ValueError("Número e duração devem ser valores inteiros.")
