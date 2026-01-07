@@ -33,13 +33,32 @@ class Interface:
         print(f"{Interface.LINHA_DUPLA}")
 
         if not midias:
-            print(f"\n{'O catálogo está vazio.'.center(Interface.LARGURA)}\n")
+            print(f"{'Nenhuma mídia cadastrada.'.center(Interface.LARGURA)}")
         else:
             for m in midias:
-                id_str = str(m.id) if m.id is not None else "N/A"
-                print(f" ID: {id_str.ljust(3)} | {m}")
+                id_val = m["id"] if m["id"] is not None else "N/A"
+                id_str = str(id_val).ljust(3)
+                
+                tipo = m["tipo"].upper()
+                titulo = m["titulo"]
+                ano = m["ano"]
+                genero = m["genero"]
 
-        print(f"{Interface.LINHA_SIMPLES}")
+                linha = f" ID: {id_str} | [{tipo:^7}] {titulo} ({ano}) - Gênero: {genero}"
+
+                if tipo == "SERIE":
+                    total_t = m["total_temps"] or 0
+                    total_e = m["total_eps"] or 0
+                    duracao_total = m["duracao_total_eps"] or 0
+                    
+                    linha += f" | {total_t} Temps | {total_e} Eps | {duracao_total} min"
+                else:
+                    duracao_filme = m["duracao"] or 0
+                    linha += f" | {duracao_filme} min"
+
+                print(linha)
+
+        print(Interface.LINHA_SIMPLES)
 
     @staticmethod
     def solicitar_dados_midia():

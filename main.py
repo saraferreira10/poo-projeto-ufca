@@ -77,12 +77,15 @@ def main():
             
             if entrada == "serie adicionar-episodio":
                 try:
-                    series = [m for m in MidiaDAO.listar_todos() if m.tipo.upper() == "SERIE"]
+                    todas_midias = MidiaDAO.listar_todos()
+                    series = [m for m in todas_midias if m["tipo"].upper() == "SERIE"]
+                    
                     if not series:
-                        Interface.exibir_mensagem_erro("Nenhuma série cadastrada.")
+                        Interface.exibir_mensagem_erro("Nenhuma série cadastrada no sistema.")
                         continue
 
                     Interface.exibir_catalogo(series)
+                    
                     midia_id = int(input("\nID da Série: "))
                     
                     num_temporada = int(input("Número da Temporada (ex: 1): "))
@@ -101,6 +104,7 @@ def main():
                         temp_id = temp_obj.id
 
                     dados_ep = Interface.solicitar_dados_episodio()
+                    
                     
                     novo_episodio = Episodio(
                         numero=dados_ep['numero'],

@@ -105,14 +105,25 @@ class MidiaDAO:
             conn.close()
 
     @staticmethod
-    def listar_todos() -> List[Midia]:
-        """Retorna todas as mídias."""
+    def listar_todos():
+        """Retorna todas as mídias com as contagens de temporadas e episódios."""
+        sql = """
+            SELECT 
+                m.*,
+                (SELECT COUNT(*) FROM temporadas t WHERE t.midia_id = m.id) as total_temps,
+                (SELECT COUNT(*) FROM episodios e 
+                 JOIN temporadas t ON e.temporada_id = t.id 
+                 WHERE t.midia_id = m.id) as total_eps,
+                (SELECT IFNULL(SUM(e.duracao), 0) FROM episodios e 
+                 JOIN temporadas t ON e.temporada_id = t.id 
+                 WHERE t.midia_id = m.id) as duracao_total_eps
+            FROM midia m
+        """
         conn = get_connection()
         try:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM midia")
-            rows = cursor.fetchall()
-            return [MidiaDAO._mapear_linha_para_objeto(r) for r in rows if r]
+            cursor.execute(sql)
+            return cursor.fetchall() 
         finally:
             conn.close()
 
