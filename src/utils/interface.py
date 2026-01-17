@@ -28,21 +28,21 @@ class Interface:
 
     @staticmethod
     def exibir_catalogo(midias):
-        print(f"\n{Interface.LINHA_DUPLA}")
+        print(f"\n{'=' * Interface.LARGURA}")
         print(f"{'CATÁLOGO DE MÍDIAS'.center(Interface.LARGURA)}")
-        print(f"{Interface.LINHA_DUPLA}")
+        print(f"{'=' * Interface.LARGURA}")
 
         if not midias:
-            print(f"{'Nenhuma mídia cadastrada.'.center(Interface.LARGURA)}")
+            print(f"{'Nenhum item no catálogo.'.center(Interface.LARGURA)}")
         else:
             for m in midias:
                 id_str = str(m["id"]).ljust(3)
                 tipo = m["tipo"].upper()
                 
-                nota_media = m["media_nota"]
-                nota_exibicao = f"⭐ {nota_media:.1f}" if nota_media > 0 else "  N/A "
+                nota_val = m["media_nota"]
+                nota_str = f"⭐ {nota_val:.1f}" if nota_val > 0 else "  N/A "
 
-                linha = f" ID: {id_str} | [{tipo:^7}] {m['titulo']} | {nota_exibicao} | Gênero: {m['genero']}"
+                linha = f" ID: {id_str} | [{tipo:^7}] {m['titulo'].ljust(20)} | {nota_str} | {m['genero'].ljust(12)}"
                 
                 if tipo == "SERIE":
                     linha += f" | {m['total_temps']} Temps | {m['total_eps']} Eps | {m['duracao_total_eps']} min"
@@ -51,7 +51,7 @@ class Interface:
                 
                 print(linha)
 
-        print(Interface.LINHA_SIMPLES)
+        print(f"{'-' * Interface.LARGURA}\n")
 
     @staticmethod
     def solicitar_dados_midia():

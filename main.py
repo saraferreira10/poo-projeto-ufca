@@ -6,6 +6,7 @@ from src.dao.avaliacao_dao import AvaliacaoDAO
 from src.dao.temporada_dao import TemporadaDAO
 from src.dao.usuario_dao import UsuarioDAO
 from src.db.dados import criar_tabelas
+from src.models.avaliacao import Avaliacao
 from src.models.episodio import Episodio
 from src.models.temporada import Temporada
 from src.models.user import User
@@ -92,9 +93,19 @@ def main():
                         Interface.exibir_mensagem_sucesso("Nota do episódio registrada!")
 
                     else:
-                        nota = int(input(f"Nota para '{selecionada['titulo']}' (1-10): "))
-                        AvaliacaoDAO.salvar(midia_id, nota) 
-                        Interface.exibir_mensagem_sucesso("Nota do filme registrada!")
+                        nota = int(input(f"Nota para o filme '{selecionada['titulo']}' (1-10): "))
+                        comentario = input("Comentário (opcional): ")
+                        
+                        nova_avaliacao = Avaliacao(
+                            usuario_id=user_id, 
+                            midia_id=midia_id, 
+                            nota=nota, 
+                            comentario=comentario
+                        )
+                        
+                        AvaliacaoDAO.salvar_avaliacao(nova_avaliacao)
+                        
+                        Interface.exibir_mensagem_sucesso("Avaliação do filme registrada!")
 
                 except ValueError:
                     Interface.exibir_mensagem_erro("Por favor, insira apenas números.")

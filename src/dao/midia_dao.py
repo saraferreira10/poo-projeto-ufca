@@ -116,7 +116,20 @@ class MidiaDAO:
                 (SELECT IFNULL(SUM(e.duracao), 0) FROM episodios e 
                  JOIN temporadas t ON e.temporada_id = t.id 
                  WHERE t.midia_id = m.id) as duracao_total_eps,
-                (SELECT IFNULL(AVG(nota), 0) FROM avaliacoes WHERE midia_id = m.id) as media_nota
+                CASE 
+                    WHEN m.tipo = 'SERIE' THEN (
+                        SELECT IFNULL(AVG(en.nota), 0)
+                        FROM episodio_notas en
+                        JOIN episodios ep ON en.episodio_id = ep.id
+                        JOIN temporadas tp ON ep.temporada_id = tp.id
+                        WHERE tp.midia_id = m.id
+                    )
+                    ELSE (
+                        SELECT IFNULL(AVG(nota), 0) 
+                        FROM avaliacoes 
+                        WHERE midia_id = m.id
+                    )
+                END as media_nota
             FROM midia m
         """
         conn = get_connection()
