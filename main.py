@@ -5,6 +5,7 @@ from src.dao.midia_dao import MidiaDAO
 from src.dao.avaliacao_dao import AvaliacaoDAO
 from src.dao.temporada_dao import TemporadaDAO
 from src.dao.usuario_dao import UsuarioDAO
+from src.dao.visualizacao_dao import VisualizacaoDAO
 from src.db.dados import criar_tabelas
 from src.models.avaliacao import Avaliacao
 from src.models.episodio import Episodio
@@ -118,7 +119,7 @@ def main():
         elif entrada.startswith("serie "):
             sub = entrada.replace("serie ", "")
             
-            if entrada == "serie adicionar-episodio":
+            if sub == "adicionar-episodio":
                 try:
                     todas_midias = MidiaDAO.listar_todos()
                     series = [m for m in todas_midias if m["tipo"].upper() == "SERIE"]
@@ -162,15 +163,57 @@ def main():
                 except Exception as e:
                     Interface.exibir_mensagem_erro(f"Erro ao processar: {e}")
             elif sub == "atualizar-status":
-                Interface.exibir_mensagem_de_todo()
+                try:
+                    midias = MidiaDAO.listar_todos()
+                    series = [m for m in midias if m["tipo"].upper() == "SERIE"]
+                    Interface.exibir_catalogo(series)
+                    
+                    midia_id = int(input("\nID da série: "))
+                    
+                    episodios = EpisodioDAO.buscar_por_midia_id(midia_id)
+                    
+                    if not episodios:
+                        Interface.exibir_mensagem_erro("Série sem episódios cadastrados.")
+                        continue
+
+                    print(f"\n{' EPISÓDIOS DISPONÍVEIS '.center(40, '-')}")
+                    for ep in episodios:
+                        print(f" ID: {str(ep.id).ljust(3)} | Ep {ep.numero}: {ep.titulo}")
+
+                    ep_id = int(input("\nID do episódio: "))
+                    user_id = int(input("Informe seu ID de usuário: "))
+                    
+                    print("\nQual o novo status?")
+                    print("[1] NÃO ASSISTIDO")
+                    print("[2] ASSISTINDO")
+                    print("[3] ASSISTIDO")
+                    opcao = input("Escolha (1-3): ")
+
+                    mapeamento = {
+                        "1": "NÃO ASSISTIDO",
+                        "2": "ASSISTINDO",
+                        "3": "ASSISTIDO"
+                    }
+
+                    novo_status = mapeamento.get(opcao)
+                    if not novo_status:
+                        Interface.exibir_mensagem_erro("Opção inválida.")
+                        continue
+
+                    if VisualizacaoDAO.atualizar_status(ep_id, user_id, novo_status):
+                        Interface.exibir_mensagem_sucesso(f"Episódio {ep_id} agora está como: {novo_status}")
+
+                except ValueError:
+                    Interface.exibir_mensagem_erro("Entrada inválida. Digite apenas números.")
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro inesperado: {e}")
 
         # --- SUBCOMANDOS: USUARIO ---
         elif entrada.startswith("usuario "):
             sub = entrada.replace("usuario ", "")
 
             if sub == "criar-lista":
-                nome_lista = input("Nome da lista personalizada: ")
-                Interface.exibir_mensagem_sucesso(f"Lista '{nome_lista}' criada para {user_logado.name}")
+                Interface.exibir_mensagem_de_todo()
 
             elif sub == "adicionar-favorito":
                 Interface.exibir_mensagem_de_todo()
