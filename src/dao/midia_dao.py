@@ -106,7 +106,6 @@ class MidiaDAO:
 
     @staticmethod
     def listar_todos():
-        """Retorna todas as mídias com as contagens de temporadas e episódios."""
         sql = """
             SELECT 
                 m.*,
@@ -116,14 +115,15 @@ class MidiaDAO:
                  WHERE t.midia_id = m.id) as total_eps,
                 (SELECT IFNULL(SUM(e.duracao), 0) FROM episodios e 
                  JOIN temporadas t ON e.temporada_id = t.id 
-                 WHERE t.midia_id = m.id) as duracao_total_eps
+                 WHERE t.midia_id = m.id) as duracao_total_eps,
+                (SELECT IFNULL(AVG(nota), 0) FROM avaliacoes WHERE midia_id = m.id) as media_nota
             FROM midia m
         """
         conn = get_connection()
         try:
             cursor = conn.cursor()
             cursor.execute(sql)
-            return cursor.fetchall() 
+            return cursor.fetchall()
         finally:
             conn.close()
 

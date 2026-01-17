@@ -36,26 +36,19 @@ class Interface:
             print(f"{'Nenhuma mídia cadastrada.'.center(Interface.LARGURA)}")
         else:
             for m in midias:
-                id_val = m["id"] if m["id"] is not None else "N/A"
-                id_str = str(id_val).ljust(3)
-                
+                id_str = str(m["id"]).ljust(3)
                 tipo = m["tipo"].upper()
-                titulo = m["titulo"]
-                ano = m["ano"]
-                genero = m["genero"]
+                
+                nota_media = m["media_nota"]
+                nota_exibicao = f"⭐ {nota_media:.1f}" if nota_media > 0 else "  N/A "
 
-                linha = f" ID: {id_str} | [{tipo:^7}] {titulo} ({ano}) - Gênero: {genero}"
-
+                linha = f" ID: {id_str} | [{tipo:^7}] {m['titulo']} | {nota_exibicao} | Gênero: {m['genero']}"
+                
                 if tipo == "SERIE":
-                    total_t = m["total_temps"] or 0
-                    total_e = m["total_eps"] or 0
-                    duracao_total = m["duracao_total_eps"] or 0
-                    
-                    linha += f" | {total_t} Temps | {total_e} Eps | {duracao_total} min"
+                    linha += f" | {m['total_temps']} Temps | {m['total_eps']} Eps | {m['duracao_total_eps']} min"
                 else:
-                    duracao_filme = m["duracao"] or 0
-                    linha += f" | {duracao_filme} min"
-
+                    linha += f" | {m['duracao']} min"
+                
                 print(linha)
 
         print(Interface.LINHA_SIMPLES)
