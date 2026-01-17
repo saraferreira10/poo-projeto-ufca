@@ -183,3 +183,105 @@ class MidiaDAO:
             return cursor.rowcount > 0
         finally:
             conn.close()
+
+    @staticmethod
+    def buscar_top_10():
+        """
+        Retorna as 10 mídias mais bem avaliadas.
+        Calcula a média de episódios para séries e avaliações diretas para filmes.
+        """
+        sql = """
+            SELECT id, titulo, tipo, 
+            CASE 
+                WHEN tipo = 'SERIE' THEN (
+                    SELECT AVG(en.nota) 
+                    FROM episodio_notas en
+                    JOIN episodios ep ON en.episodio_id = ep.id
+                    JOIN temporadas tp ON ep.temporada_id = tp.id
+                    WHERE tp.midia_id = midia.id
+                )
+                ELSE (
+                    SELECT AVG(nota) 
+                    FROM avaliacoes 
+                    WHERE midia_id = midia.id
+                )
+            END as media
+            FROM midia
+            WHERE media IS NOT NULL
+            ORDER BY media DESC
+            LIMIT 10
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchall()
+        finally:
+            conn.close()
+
+    @staticmethod
+    def relatorio_media_por_genero():
+        """Média de notas agrupadas por gênero (Filmes e Séries combinados)"""
+        sql = """
+            SELECT genero, AVG(nota) as media 
+            FROM (
+                SELECT m.genero, a.nota FROM midia m JOIN avaliacoes a ON m.id = a.midia_id
+                UNION ALL
+                SELECT m.genero, en.nota FROM midia m 
+                JOIN temporadas t ON m.id = t.midia_id
+                JOIN episodios e ON t.id = e.temporada_id
+                JOIN episodio_notas en ON e.id = en.episodio_id
+            )
+            GROUP BY genero ORDER BY media DESC
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchall()
+        finally:
+            conn.close()
+
+    @staticmethod
+    def relatorio_tempo_por_tipo():
+        """Soma da duração de mídias e episódios com status 'ASSISTIDO'"""
+        sql = """
+            SELECT 'FILME' as tipo, IFNULL(SUM(m.duracao), 0) as total
+            FROM midia m
+            JOIN visualizacoes_filme vf ON m.id = vf.midia_id
+            WHERE vf.status = 'ASSISTIDO'
+            UNION ALL
+            SELECT 'SERIE' as tipo, IFNULL(SUM(e.duracao), 0) as total
+            FROM episodios e
+            JOIN visualizacoes_episodio ve ON e.id = ve.episodio_id
+            WHERE ve.status = 'ASSISTIDO'
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchall()
+        finally:
+            conn.close()
+
+    @staticmethod
+    def relatorio_series_mais_assistidas():
+        """Séries com maior contagem de episódios marcados como 'ASSISTIDO'"""
+        sql = """
+            SELECT m.titulo, COUNT(ve.id) as total_eps
+            FROM midia m
+            JOIN temporadas t ON m.id = t.midia_id
+            JOIN episodios e ON t.id = e.temporada_id
+            JOIN visualizacoes_episodio ve ON e.id = ve.episodio_id
+            WHERE ve.status = 'ASSISTIDO'
+            GROUP BY m.id
+            ORDER BY total_eps DESC
+            LIMIT 5
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchall()
+        finally:
+            conn.close()

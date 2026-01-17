@@ -201,3 +201,28 @@ class Interface:
             }
         except ValueError:
             raise ValueError("Número e duração devem ser valores inteiros.")
+
+    @staticmethod
+    def exibir_relatorio_geral(medias_genero, tempos_tipo, series_top, ranking_top):
+        print(f"\n{'#'*60}")
+        print(f"{'📊 RELATÓRIOS DE CONSUMO E DESEMPENHO'.center(60)}")
+        print(f"{'#'*60}")
+
+        print(f"\n[ TEMPO TOTAL ASSISTIDO ]")
+        for t in tempos_tipo:
+            horas = t['total'] // 60
+            print(f"- {t['tipo']}: {t['total']} min (~{horas}h)")
+
+        print(f"\n[ MÉDIA DE NOTAS POR GÊNERO ]")
+        for g in medias_genero:
+            print(f"- {g['genero'].ljust(15)}: ⭐ {g['media']:.1f}")
+
+        print(f"\n[ SÉRIES MAIS ASSISTIDAS (EPS) ]")
+        for s in series_top:
+            print(f"- {s['titulo'].ljust(20)}: {s['total_eps']} episódios")
+
+        print(f"\n[ TOP 10 MÍDIAS DO CATÁLOGO ]")
+        for i, m in enumerate(ranking_top, 1):
+            print(f"{i}º {m['titulo'][:20].ljust(20)} | ⭐ {m['media']:.1f}")
+        
+        print(f"\n{'='*60}")

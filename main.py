@@ -113,7 +113,16 @@ def main():
                 except Exception as e:
                     Interface.exibir_mensagem_erro(f"Erro ao avaliar: {e}")
             elif sub == "relatorio top":
-                Interface.exibir_mensagem_de_todo()
+                try:
+                    ranking = MidiaDAO.buscar_top_10()
+                    generos = MidiaDAO.relatorio_media_por_genero()
+                    tempos = MidiaDAO.relatorio_tempo_por_tipo()
+                    mais_assistidas = MidiaDAO.relatorio_series_mais_assistidas()
+
+                    Interface.exibir_relatorio_geral(generos, tempos, mais_assistidas, ranking)
+
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro ao gerar relatórios: {e}")
 
         # --- SUBCOMANDOS: SERIE ---
         elif entrada.startswith("serie "):
