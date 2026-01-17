@@ -150,6 +150,7 @@ class Interface:
         print(" > midia relatorio top")
         print(" > serie adicionar-episodio")
         print(" > serie atualizar-status")
+        print(" > filme atualizar-status")
         print(" > usuario criar-lista")
         print(" > usuario adicionar-favorito")
         print(" > sair")

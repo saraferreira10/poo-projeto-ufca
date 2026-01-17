@@ -218,6 +218,51 @@ def main():
             elif sub == "adicionar-favorito":
                 Interface.exibir_mensagem_de_todo()
 
+        elif entrada == "filme atualizar-status":
+            try:
+                midias = MidiaDAO.listar_todos()
+                filmes = [m for m in midias if m["tipo"].upper() == "FILME"]
+                
+                if not filmes:
+                    Interface.exibir_mensagem_erro("Nenhum filme cadastrado no catálogo.")
+                    continue
+                
+                Interface.exibir_catalogo(filmes)
+                
+                midia_id = int(input("\nID do filme para atualizar status: "))
+                
+                selecionado = next((f for f in filmes if f["id"] == midia_id), None)
+                if not selecionado:
+                    Interface.exibir_mensagem_erro("Filme não encontrado ou o ID informado não é um filme.")
+                    continue
+
+                user_id = int(input("Informe seu ID de usuário: "))
+                
+                print(f"\n--- ATUALIZAR STATUS: {selecionado['titulo']} ---")
+                print("[1] NÃO ASSISTIDO")
+                print("[2] ASSISTINDO")
+                print("[3] ASSISTIDO")
+                opcao = input("Escolha uma opção (1-3): ")
+
+                mapeamento = {
+                    "1": "NÃO ASSISTIDO",
+                    "2": "ASSISTINDO",
+                    "3": "ASSISTIDO"
+                }
+
+                novo_status = mapeamento.get(opcao)
+                if not novo_status:
+                    Interface.exibir_mensagem_erro("Opção inválida.")
+                    continue
+
+                from src.dao.visualizacao_filme_dao import VisualizacaoFilmeDAO
+                if VisualizacaoFilmeDAO.atualizar_status(midia_id, user_id, novo_status):
+                    Interface.exibir_mensagem_sucesso(f"Filme '{selecionado['titulo']}' atualizado para: {novo_status}")
+
+            except ValueError:
+                Interface.exibir_mensagem_erro("Entrada inválida. Use apenas números para IDs e opções.")
+            except Exception as e:
+                Interface.exibir_mensagem_erro(f"Erro ao processar atualização: {e}")
         else:
             Interface.exibir_mensagem_opcao_invalida(entrada)
 
