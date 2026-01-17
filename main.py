@@ -1,5 +1,6 @@
 import sqlite3
 from src.dao.episodio_dao import EpisodioDAO
+from src.dao.episodio_nota_dao import EpisodioNotaDAO
 from src.dao.midia_dao import MidiaDAO
 from src.dao.avaliacao_dao import AvaliacaoDAO
 from src.dao.temporada_dao import TemporadaDAO
@@ -61,13 +62,44 @@ def main():
                     
             elif sub == "avaliar":
                 try:
-                    midia_id = int(input("ID da mídia para avaliar: "))
-                    avaliacao = Interface.solicitar_dados_avaliacao(midia_id, user_logado.id)
-                    if avaliacao:
-                        AvaliacaoDAO.salvar_avaliacao(avaliacao)
-                        Interface.exibir_mensagem_sucesso("Avaliação registrada!")
-                except Exception as e: Interface.exibir_mensagem_erro(e)
+                    midias = MidiaDAO.listar_todos()
+                    Interface.exibir_catalogo(midias)
+                    
+                    midia_id = int(input("\nID da mídia que deseja avaliar: "))
+                    selecionada = next((m for m in midias if m["id"] == midia_id), None)
 
+                    if not selecionada:
+                        Interface.exibir_mensagem_erro("Mídia não encontrada.")
+                        continue
+
+                    user_id = int(input("Informe seu ID de Usuário: "))
+
+                    if selecionada["tipo"].upper() == "SERIE":
+                        episodios = EpisodioDAO.buscar_por_midia_id(midia_id) 
+
+                        if not episodios:
+                            Interface.exibir_mensagem_erro("Esta série não tem episódios.")
+                            continue
+
+                        print("\n--- EPISÓDIOS DISPONÍVEIS ---")
+                        for ep in episodios:
+                            print(f" ID: {str(ep.id).ljust(3)} | Ep {ep.numero}: {ep.titulo}")
+                        
+                        ep_id = int(input("\nID do Episódio: "))
+                        nota = int(input("Nota (1-10): "))
+
+                        EpisodioNotaDAO.salvar(ep_id, user_id, nota)
+                        Interface.exibir_mensagem_sucesso("Nota do episódio registrada!")
+
+                    else:
+                        nota = int(input(f"Nota para '{selecionada['titulo']}' (1-10): "))
+                        AvaliacaoDAO.salvar(midia_id, nota) 
+                        Interface.exibir_mensagem_sucesso("Nota do filme registrada!")
+
+                except ValueError:
+                    Interface.exibir_mensagem_erro("Por favor, insira apenas números.")
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro ao avaliar: {e}")
             elif sub == "relatorio top":
                 Interface.exibir_mensagem_de_todo()
 

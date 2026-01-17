@@ -139,3 +139,28 @@ class EpisodioDAO:
             return cursor.rowcount > 0
         finally:
             conn.close()
+
+    @staticmethod
+    def buscar_por_midia_id(midia_id: int) -> List[Episodio]:
+        """Busca episódios atravessando a tabela de temporadas."""
+        sql = """
+            SELECT e.* FROM episodios e
+            JOIN temporadas t ON e.temporada_id = t.id
+            WHERE t.midia_id = ?
+            ORDER BY t.numero, e.numero
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (midia_id,))
+            rows = cursor.fetchall()
+            return [
+                Episodio(
+                    id=r["id"], 
+                    numero=r["numero"], 
+                    titulo=r["titulo"], 
+                    duracao=r["duracao"]
+                ) for r in rows if r
+            ]
+        finally:
+            conn.close()
