@@ -42,4 +42,23 @@ class EpisodioNotaDAO:
             return cursor.fetchall()
         finally:
             conn.close()
+
+    @staticmethod
+    def calcular_media_serie(midia_id: int) -> float:
+        """Calcula a média de todas as notas dos episódios de uma série."""
+        sql = """
+            SELECT AVG(en.nota) as media
+            FROM episodio_notas en
+            JOIN episodios ep ON en.episodio_id = ep.id
+            JOIN temporadas t ON ep.temporada_id = t.id
+            WHERE t.midia_id = ?
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (midia_id,))
+            row = cursor.fetchone()
+            return float(row["media"]) if row and row["media"] is not None else 0.0
+        finally:
+            conn.close()
     

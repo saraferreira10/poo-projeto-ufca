@@ -45,10 +45,13 @@ class Serie(Midia):
 
     def calcular_media(self) -> float:
         """
-        Calcula a média das notas da série.
+        Calcula a média das notas da série baseada nas avaliações dos episódios.
         """
-        # TODO: implementar cálculo de média da série com base em avaliacoes.
-        return 0.0
+        if not self.id:
+            return 0.0
+        
+        from src.dao.episodio_nota_dao import EpisodioNotaDAO
+        return EpisodioNotaDAO.calcular_media_serie(self.id)
 
     def __len__(self) -> int:
         """
