@@ -31,16 +31,28 @@ def main():
     
     print(f"✅ Sistema inicializado! Logado como: {user_logado.name} (ID: {user_logado.id})")
 
+    primeira_execucao = True
+
     while True:
-        Interface.exibir_ajuda_comandos() 
+        if primeira_execucao:
+            Interface.exibir_tela_boas_vindas()
+            Interface.exibir_comandos()
+            primeira_execucao = False
+        else:
+            Interface.exibir_menu_compacto()
+
         entrada = input("\n$ ").strip().lower()
 
         if not entrada:
             continue
 
-        if entrada == "sair" or entrada == "0":
+        if entrada == "sair":
             Interface.exibir_mensagem_de_saida()
             break
+        
+        elif entrada == "help" or entrada == "ajuda":
+            Interface.exibir_comandos()
+            continue
 
         # --- SUBCOMANDOS: MIDIA ---
         elif entrada.startswith("midia "):

@@ -53,6 +53,14 @@ class Interface:
 
         print(f"{'-' * Interface.LARGURA}\n")
 
+
+    @staticmethod
+    def exibir_menu_compacto():
+        print(f"\n{Interface.LINHA_SIMPLES}")
+        print(f"\n💡 Digite um comando ou 'help' para ver os comandos disponíveis")
+        print(f"sair - Encerra o sistema")
+        print(f"{Interface.LINHA_SIMPLES}")
+
     @staticmethod
     def solicitar_dados_midia():
         print(f"\n{Interface.LINHA_SIMPLES}")
