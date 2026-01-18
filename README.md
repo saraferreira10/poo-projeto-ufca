@@ -54,7 +54,7 @@ Modelagem orientada a objetos (herança, encapsulamento, validações e composi�
   - [Episodio](#episodio)
 - [Enums Utilizadas no Sistema](#enums-utilizadas-no-sistema)
 
-# Principais Classes do Projeto (UML Textual)
+## Principais Classes do Projeto (UML Textual)
 
 ### **Usuario**
 **Classe:** Usuario  
@@ -225,7 +225,7 @@ Os métodos `avaliar`, `marcar_assistido` e `calcular_media` são **sobrescritos
 
 ---
 
-# Enums Utilizadas no Sistema
+## Enums Utilizadas no Sistema
 
 ### **Enum: TipoMidia**
 - FILME  
@@ -292,12 +292,13 @@ As mensagens de commit podem ser organizadas seguindo uma estrutura básica:
 - **build:** Mudanças no sistema de build
 - **revert:** Reverter um commit anterior
 
-### Ferramentas
+## Ferramentas e Setup
 
 Para baixar o CLI na sua máquina e poder utilizar você pode precisar usar algumas ferramentas:
 
-#### tree
-comando utilitário de terminal que exibe o conteúdo de um diretório em um formato de árvore gráfica. Ele é extremamente útil para visualizar a hierarquia de pastas e arquivos de um projeto de programação
+### tree
+comando utilitário de terminal que exibe o conteúdo de um diretório em um formato de árvore gráfica. Ele é extremamente útil para visualizar a hierarquia de pastas e arquivos de um projeto de programação.
+Não é obrigatório, mas ajuda na visualização das pastas via terminal
 
 ```bash
 # No Ubuntu/WSL
