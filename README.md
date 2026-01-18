@@ -13,6 +13,25 @@ O sistema permite acompanhar o progresso de séries e comparar avaliações entr
 Persistência simples (em JSON ou SQLite)
 Modelagem orientada a objetos (herança, encapsulamento, validações e composição).
 
+### Integrantes da Equipe
+- Carlos Anderson Dos Santos De Souza:
+
+- Holivane Pessoa Holanda Cabrini:
+  * Desenvolvimento da *CLI*
+  * Documentação
+  * Implementação de métodos de avaliação, marcação de assistido e cálculo de médias  
+  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)
+  * Modelagem e implementação de *Usuario*, *Catalogo*, *ListaPersonalizada* e *RegistroHistorico*  
+  * Validações de dados  
+
+- Sara Ferreira de Araújo:
+  * Desenvolvimento da *CLI* 
+  * Documentação
+  * Integração com *persistência SQLite*
+  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)
+  * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio* 
+  * Organização do projeto e divisão das tarefas 
+
 ### Diagrama (em construção)
 <details>
   <summary>Clique aqui para visualizar o diagrama</summary>
@@ -34,25 +53,6 @@ Modelagem orientada a objetos (herança, encapsulamento, validações e composi�
   - [Temporada](#temporada)
   - [Episodio](#episodio)
 - [Enums Utilizadas no Sistema](#enums-utilizadas-no-sistema)
-
-## Integrantes da Equipe
-- Carlos Anderson Dos Santos De Souza:
-
-- Holivane Pessoa Holanda Cabrini:
-  * Desenvolvimento da *CLI*
-  * Documentação
-  * Implementação de métodos de avaliação, marcação de assistido e cálculo de médias  
-  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)
-  * Modelagem e implementação de *Usuario*, *Catalogo*, *ListaPersonalizada* e *RegistroHistorico*  
-  * Validações de dados  
-
-- Sara Ferreira de Araújo:
-  * Desenvolvimento da *CLI* 
-  * Documentação
-  * Integração com *persistência SQLite*
-  * Implementação de métodos simples de relatórios no catálogo (ex.: tempo total assistido, listar séries/favoritos)
-  * Modelagem de classes principais: *Midia, Filme, Serie, Temporada, Episodio* 
-  * Organização do projeto e divisão das tarefas 
 
 # Principais Classes do Projeto (UML Textual)
 
