@@ -1,3 +1,4 @@
+from src.dao.midia_dao import MidiaDAO
 from src.enums.enums import Genero
 
 
@@ -8,23 +9,26 @@ from src.models.serie import Serie
 
 
 class Interface:
-    LARGURA = 80
+    LARGURA = 120
     LINHA_DUPLA = "=" * LARGURA
     LINHA_SIMPLES = "-" * LARGURA
 
+    # TELAS
     @staticmethod
-    def exibir_menu_principal():
-        menu = (
-            f"\n{Interface.LINHA_DUPLA}\n"
-            f"{'MENU PRINCIPAL'.center(Interface.LARGURA)}\n"
-            f"{Interface.LINHA_DUPLA}\n"
-            f" [1] Ver Catálogo\n"
-            f" [2] Adicionar Mídia\n"
-            f" [3] Remover Mídia\n"
-            f" [0] Sair do Sistema\n"
-            f"{Interface.LINHA_SIMPLES}"
-        )
-        print(menu)
+    def exibir_tela_boas_vindas(usuario, estatisticas):
+        print(f"\n{Interface.LINHA_DUPLA}")
+        print(f"{' 🎬 CATÁLOGO DE MÍDIAS '.center(Interface.LARGURA, '=')}")
+        print(f"{Interface.LINHA_DUPLA}")
+        print(f"👤 Usuário: {usuario.name} (ID: {usuario.id})")
+        
+        total = estatisticas.get('total', 0)
+        filmes = estatisticas.get('filmes', 0)
+        series = estatisticas.get('series', 0)
+        tempo = estatisticas.get('tempo_total', 0)
+        horas = tempo // 60
+        
+        print(f"📊 Resumo: {total} mídias | {filmes} filmes | {series} séries | ~{horas}h assistidas")
+        print(f"{Interface.LINHA_SIMPLES}")
 
     @staticmethod
     def exibir_catalogo(midias):
@@ -148,20 +152,39 @@ class Interface:
 
     # CLI COM SUBCOMANDOS
     @staticmethod
-    def exibir_ajuda_comandos():
+    def exibir_comandos():
         print(f"\n{Interface.LINHA_DUPLA}")
         print(f"{'COMANDOS DISPONÍVEIS'.center(Interface.LARGURA)}")
         print(f"{Interface.LINHA_DUPLA}")
-        print(" > midia listar")
-        print(" > midia adicionar")
-        print(" > midia avaliar")
-        print(" > midia relatorio top")
-        print(" > serie adicionar-episodio")
-        print(" > serie atualizar-status")
-        print(" > filme atualizar-status")
-        print(" > usuario criar-lista")
-        print(" > usuario adicionar-favorito")
-        print(" > sair")
+        
+        # MÍDIA
+        print(f"\n{'📚 MÍDIA'.ljust(20)}")
+        print("  > midia listar               - Lista todas as mídias do catálogo")
+        print("  > midia adicionar            - Adiciona uma nova mídia (filme ou série)")
+        print("  > midia avaliar              - Avalia uma mídia do catálogo")
+        print("  > midia relatorio top        - Exibe relatórios e top 10 do catálogo")
+        
+        # SÉRIE
+        print(f"\n{'📺 SÉRIE'.ljust(20)}")
+        print("  > serie adicionar-episodio   - Adiciona episódio a uma temporada")
+        print("  > serie atualizar-status     - Atualiza status de visualização de episódio")
+        
+        # FILME
+        print(f"\n{'🎬 FILME'.ljust(20)}")
+        print("  > filme atualizar-status     - Atualiza status de visualização de filme")
+        
+        # USUÁRIO
+        print(f"\n{'👤 USUÁRIO'.ljust(20)}")
+        print("  > usuario criar-lista        - Cria uma lista personalizada")
+        print("  > usuario adicionar-favorito - Adiciona mídia aos favoritos")
+        
+        # SISTEMA
+        print(f"\n{'⚙️  SISTEMA'.ljust(20)}")
+        print("  > sistema popular-banco      - Popula o banco com dados de exemplo")
+        print("  > sistema resetar-banco      - Limpa todo o banco de dados")
+        print("  > help / ajuda               - Exibe esta lista de comandos")
+        print("  > sair                       - Encerra o sistema")
+        
         print(f"{Interface.LINHA_SIMPLES}")
 
     @staticmethod
