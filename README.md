@@ -10,11 +10,11 @@ Sistema de **API mínima** para gerenciar um **Catálogo pessoal de filmes e sé
 
 O sistema permite acompanhar o progresso de séries e comparar avaliações entre mídias. 
 
-Persistência simples (em JSON ou SQLite)
+Persistência simples em SQLite
 Modelagem orientada a objetos (herança, encapsulamento, validações e composição).
 
 ### Integrantes da Equipe
-- Carlos Anderson Dos Santos De Souza:
+- Carlos Anderson Dos Santos De Souza
 
 - Holivane Pessoa Holanda Cabrini:
   * Desenvolvimento da *CLI*
@@ -57,12 +57,11 @@ Modelagem orientada a objetos (herança, encapsulamento, validações e composi�
 ## Principais Classes do Projeto (UML Textual)
 
 ### **Usuario**
-**Classe:** Usuario  
+**Classe:** Usuario (mapeada em `src/models/usuario.py`)
 
 **Atributos:**  
 - nome  
 - email  
-- catalogo  
 - listas_personalizadas  
 - historico  
 
@@ -262,6 +261,167 @@ Os métodos `avaliar`, `marcar_assistido` e `calcular_media` são **sobrescritos
 - 14  
 - 16  
 - 18  
+
+## 📺 Telas e Interface do Sistema
+
+O sistema utiliza uma interface CLI (Command Line Interface) com comandos organizados por categorias. Abaixo estão documentadas as principais telas e funcionalidades disponíveis.
+
+### 🎬 Tela de Boas-Vindas
+
+**Quando é exibida:** Ao iniciar o sistema pela primeira vez em cada sessão.
+
+**Conteúdo:**
+- **Cabeçalho:** CATÁLOGO DE FILMES E SÉRIES
+- **Informações do usuário:** Nome e ID do usuário logado
+- **Resumo estatístico:**
+  - Total de mídias no catálogo
+  - Total de filmes cadastrados
+  - Total de séries cadastradas
+  - Tempo total assistido (em minutos e horas)
+- **Lista de comandos disponíveis:** Comandos organizados por categoria
+
+**Exemplo visual:**
+```
+================================================================================
+                    🎬 CATÁLOGO DE MÍDIAS
+================================================================================
+👤 Usuário: Usuario Padrao (ID: 1)
+📊 Resumo: 15 mídias | 8 filmes | 7 séries | ~45h assistidas
+--------------------------------------------------------------------------------
+```
+
+### 📚 Tela de Catálogo
+
+**Comando:** `midia listar`
+
+**Conteúdo:**
+- Lista formatada de todas as mídias cadastradas
+- Informações exibidas:
+  - ID da mídia
+  - Tipo (FILME ou SERIE)
+  - Título
+  - Média de avaliações (⭐)
+  - Gênero
+  - Duração (filmes) ou total de temporadas/episódios (séries)
+
+**Formato de exibição:**
+```
+================================================================================
+                           CATÁLOGO DE MÍDIAS
+================================================================================
+ ID: 1  | [FILME ] Inception              | ⭐ 9.5 | Ficção Científica | 148 min
+ ID: 2  | [SERIE ] Breaking Bad           | ⭐ 9.8 | Drama             | 5 Temps | 62 Eps | 2934 min
+```
+
+### 📝 Tela de Cadastro de Mídia
+
+**Comando:** `midia adicionar`
+
+**Fluxo:**
+1. Solicitação de dados básicos (título, tipo, gênero, ano, classificação, elenco)
+2. Dados específicos conforme o tipo:
+   - **Filme:** Duração em minutos
+   - **Série:** Apenas dados básicos (temporadas e episódios são adicionados depois)
+
+**Validações:**
+- Gênero deve estar na lista de gêneros disponíveis
+- Classificação deve ser válida (L, 10, 12, 14, 16, 18)
+- Verificação de duplicidade (título + ano)
+
+### ⭐ Tela de Avaliação
+
+**Comando:** `midia avaliar`
+
+**Fluxo:**
+1. Exibição do catálogo para seleção
+2. Seleção da mídia por ID
+3. **Para Filmes:** Avaliação direta (nota 0-10 e comentário opcional)
+4. **Para Séries:** Seleção de episódio específico e avaliação do episódio
+
+**Dados coletados:**
+- Nota (0 a 10)
+- Comentário (opcional)
+- ID do usuário
+- ID da mídia/episódio
+
+### 📊 Tela de Relatórios
+
+**Comando:** `midia relatorio top`
+
+**Conteúdo:**
+- **Tempo total assistido:** Separado por tipo (filmes/séries)
+- **Média de notas por gênero:** Estatísticas de avaliação
+- **Séries mais assistidas:** Ranking por número de episódios assistidos
+- **Top 10 mídias:** Ranking das melhores avaliações do catálogo
+
+**Formato:**
+```
+📊 RELATÓRIOS DE CONSUMO E DESEMPENHO
+[ TEMPO TOTAL ASSISTIDO ]
+- FILME: 1240 min (~20h)
+- SERIE: 2934 min (~48h)
+
+[ MÉDIA DE NOTAS POR GÊNERO ]
+- Drama          : ⭐ 9.2
+- Ficção Científica: ⭐ 8.9
+
+[ TOP 10 MÍDIAS DO CATÁLOGO ]
+1º Breaking Bad        | ⭐ 9.8
+2º Inception           | ⭐ 9.5
+```
+
+### 📺 Tela de Gerenciamento de Séries
+
+**Comandos:** `serie adicionar-episodio`, `serie atualizar-status`
+
+**Funcionalidades:**
+- **Adicionar episódio:** 
+  - Seleção da série
+  - Número da temporada (criação automática se não existir)
+  - Dados do episódio (número, título, duração)
+- **Atualizar status:**
+  - Lista de episódios disponíveis
+  - Seleção de episódio por ID
+  - Atualização de status (NÃO ASSISTIDO, ASSISTINDO, ASSISTIDO)
+
+### 🎬 Tela de Gerenciamento de Filmes
+
+**Comando:** `filme atualizar-status`
+
+**Funcionalidades:**
+- Lista de filmes cadastrados
+- Seleção do filme por ID
+- Atualização de status de visualização (NÃO ASSISTIDO, ASSISTINDO, ASSISTIDO)
+
+### 👤 Tela de Gerenciamento de Usuário
+
+**Comandos:** `usuario criar-lista`, `usuario adicionar-favorito`
+
+**Funcionalidades:**
+- **Criar lista personalizada:** Criação de listas customizadas (ex: "Assistir depois", "Favoritos")
+- **Adicionar favorito:** Marcação de mídias como favoritas
+
+### 💡 Tela de Ajuda
+
+**Comando:** `help` ou `ajuda`
+
+**Conteúdo:**
+- Lista completa de todos os comandos disponíveis
+- Organização por categorias:
+  - 📚 MÍDIA
+  - 📺 SÉRIE
+  - 🎬 FILME
+  - 👤 USUÁRIO
+  - ⚙️ SISTEMA
+- Descrição breve de cada comando
+
+### 🔄 Fluxo de Navegação
+
+1. **Inicialização:** Tela de boas-vindas com comandos
+2. **Operações:** Comandos específicos executam suas respectivas telas
+3. **Retorno:** Após cada operação, retorna ao prompt de comandos
+4. **Ajuda:** Comando `help` sempre disponível para consulta
+5. **Saída:** Comando `sair` encerra o sistema
 
 ## 🔗 Referência Principal do Projeto (Link para o Arquivo Base)
 **Arquivo Base:** https://docs.google.com/document/d/1Grv7dnrhYA3PhTxRSJIqgxM-UFbGesNb/edit
