@@ -285,3 +285,96 @@ class MidiaDAO:
             return cursor.fetchall()
         finally:
             conn.close()
+
+    @staticmethod
+    def contar_total_midias():
+        """Conta o total de mídias no banco de dados"""
+        sql = "SELECT COUNT(*) FROM midia"
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchone()[0]
+        finally:
+            conn.close()
+
+    @staticmethod
+    def contar_total_filmes():
+        """Conta o total de filmes no banco de dados"""
+        sql = "SELECT COUNT(*) FROM filme"
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchone()[0]
+        finally:
+            conn.close()
+
+    @staticmethod
+    def contar_total_series():
+        """Conta o total de séries no banco de dados"""
+        sql = "SELECT COUNT(*) FROM serie"
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchone()[0]
+        finally:
+            conn.close()
+
+    @staticmethod
+    def calcular_tempo_total_assistido():
+        """Calcula o tempo total assistido de todas as mídias"""
+        sql = """
+            SELECT SUM(duracao) FROM midia
+            JOIN visualizacoes_filme ON midia.id = visualizacoes_filme.midia_id
+            WHERE visualizacoes_filme.status = 'ASSISTIDO'
+        """
+        conn = get_connection()
+        if conn is None:
+            return 0
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            return cursor.fetchone()[0]
+        finally:
+            conn.close()
+
+    @staticmethod
+    def obter_estatisticas_gerais():
+        """Retorna um dicionário com estatísticas do catálogo para a tela inicial."""
+        sql = """
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN tipo = 'FILME' THEN 1 ELSE 0 END) as filmes,
+                SUM(CASE WHEN tipo = 'SERIE' THEN 1 ELSE 0 END) as series,
+                IFNULL((
+                    SELECT SUM(m.duracao)
+                    FROM midia m
+                    JOIN visualizacoes_filme vf ON m.id = vf.midia_id
+                    WHERE vf.status = 'ASSISTIDO'
+                ), 0) + 
+                IFNULL((
+                    SELECT SUM(e.duracao)
+                    FROM episodios e
+                    JOIN visualizacoes_episodio ve ON e.id = ve.episodio_id
+                    WHERE ve.status = 'ASSISTIDO'
+                ), 0) as tempo_total
+            FROM midia
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql)
+            row = cursor.fetchone()
+            if row:
+                return {
+                    "total": row["total"] or 0,
+                    "filmes": row["filmes"] or 0,
+                    "series": row["series"] or 0,
+                    "tempo_total": row["tempo_total"] or 0
+                }
+            return {"total": 0, "filmes": 0, "series": 0, "tempo_total": 0}
+        finally:
+            conn.close()
+
