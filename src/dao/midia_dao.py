@@ -140,6 +140,46 @@ class MidiaDAO:
         finally:
             conn.close()
 
+    @staticmethod
+    def listar_por_lista(lista_id: int):
+        """Retorna todas as mídias contidas em uma lista específica, com campos calculados."""
+        sql = """
+            SELECT 
+                m.*,
+                (SELECT COUNT(*) FROM temporadas t WHERE t.midia_id = m.id) as total_temps,
+                (SELECT COUNT(*) FROM episodios e 
+                 JOIN temporadas t ON e.temporada_id = t.id 
+                 WHERE t.midia_id = m.id) as total_eps,
+                (SELECT IFNULL(SUM(e.duracao), 0) FROM episodios e 
+                 JOIN temporadas t ON e.temporada_id = t.id 
+                 WHERE t.midia_id = m.id) as duracao_total_eps,
+                CASE 
+                    WHEN m.tipo = 'SERIE' THEN (
+                        SELECT IFNULL(AVG(en.nota), 0)
+                        FROM episodio_notas en
+                        JOIN episodios ep ON en.episodio_id = ep.id
+                        JOIN temporadas tp ON ep.temporada_id = tp.id
+                        WHERE tp.midia_id = m.id
+                    )
+                    ELSE (
+                        SELECT IFNULL(AVG(nota), 0) 
+                        FROM avaliacoes 
+                        WHERE midia_id = m.id
+                    )
+                END as media_nota
+            FROM midia m
+            JOIN itens_lista il ON m.id = il.midia_id
+            WHERE il.lista_id = ?
+            ORDER BY m.titulo
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (lista_id,))
+            return cursor.fetchall()
+        finally:
+            conn.close()
+
     # --- UPDATE ---
     @staticmethod
     def atualizar(midia: Midia) -> bool:

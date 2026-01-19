@@ -73,6 +73,45 @@ class Interface:
 
 
     @staticmethod
+    def exibir_listas_do_usuario(listas):
+        print(f"\n{'=' * Interface.LARGURA}")
+        print(f"{'SUAS LISTAS PERSONALIZADAS'.center(Interface.LARGURA)}")
+        print(f"{'=' * Interface.LARGURA}")
+
+        if not listas:
+            print(f"{' Você ainda não possui listas personalizadas :( '.center(Interface.LARGURA, '*')}")
+        else:
+            for l in listas:
+                print(f" ID: {str(l['id']).ljust(3)} | Nome: {l['nome']}")
+
+        print(f"{'-' * Interface.LARGURA}\n")
+
+
+    @staticmethod
+    def exibir_historico(filmes, episodios):
+        print(f"\n{'=' * Interface.LARGURA}")
+        print(f"{'SEU HISTÓRICO DE VISUALIZAÇÃO'.center(Interface.LARGURA)}")
+        print(f"{'=' * Interface.LARGURA}")
+
+        print(f"\n🎬 [ FILMES ]")
+        if not filmes:
+            print("  Nenhum filme no histórico.")
+        else:
+            for f in filmes:
+                data = f['data_visualizacao'] or "Data não reg."
+                print(f"  - {f['titulo'].ljust(30)} | Status: {f['status'].ljust(15)} | Em: {data}")
+
+        print(f"\n📺 [ EPISÓDIOS DE SÉRIES ]")
+        if not episodios:
+            print("  Nenhum episódio no histórico.")
+        else:
+            for e in episodios:
+                print(f"  - {e['serie_titulo'].ljust(20)} | Ep {str(e['numero']).zfill(2)}: {e['ep_titulo'].ljust(25)} | Status: {e['status']}")
+
+        print(f"\n{'-' * Interface.LARGURA}\n")
+
+
+    @staticmethod
     def exibir_menu_compacto(usuario):
         print(f"\n{Interface.LINHA_SIMPLES}")
         print(f"USUÁRIO LOGADO: {usuario.nome} (ID: {usuario.id})")
@@ -142,6 +181,10 @@ class Interface:
         print(f"\n❌ ERRO: {texto}")
 
     @staticmethod
+    def exibir_mensagem_de_alerta(texto):
+        print(f"\n 🔔 {texto}")
+
+    @staticmethod
     def exibir_mensagem_de_saida():
         mensagem = f"\nEncerrando o sistema... \n" f"Sistema encerrado\n"
         print(mensagem)
@@ -191,7 +234,15 @@ class Interface:
         # USUÁRIO
         print(f"\n{'👤 USUÁRIO'.ljust(20)}")
         print("  > usuario listar             - Lista todos os usuários cadastrados")
+        print("  > usuario historico          - Exibe seu histórico de visualização")
+        print("  > usuario estatisticas       - Exibe suas estatísticas de consumo")
+        print("  > usuario favoritos          - Exibe suas mídias favoritas")
+        print("  > usuario listar-listas      - Lista suas listas personalizadas")
+        print("  > usuario ver-lista          - Exibe as mídias de uma lista específica")
         print("  > usuario criar-lista        - Cria uma lista personalizada")
+        print("  > usuario remover-lista      - Exclui uma lista personalizada")
+        print("  > usuario adicionar-midia    - Adiciona uma mídia a uma lista")
+        print("  > usuario remover-midia      - Remove uma mídia de uma lista")
         print("  > usuario adicionar-favorito - Adiciona mídia aos favoritos")
         
         # SISTEMA

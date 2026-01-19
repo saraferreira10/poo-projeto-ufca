@@ -26,3 +26,21 @@ class VisualizacaoFilmeDAO:
             return False
         finally:
             conn.close()
+
+    @staticmethod
+    def listar_historico_filmes(usuario_id: int):
+        """Retorna o histórico de filmes visualizados pelo usuário."""
+        sql = """
+            SELECT m.titulo, vf.status, vf.data_visualizacao
+            FROM visualizacoes_filme vf
+            JOIN midia m ON vf.midia_id = m.id
+            WHERE vf.usuario_id = ?
+            ORDER BY vf.data_visualizacao DESC
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (usuario_id,))
+            return cursor.fetchall()
+        finally:
+            conn.close()

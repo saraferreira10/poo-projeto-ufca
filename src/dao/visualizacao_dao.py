@@ -22,3 +22,23 @@ class VisualizacaoDAO:
             return False
         finally:
             conn.close()
+
+    @staticmethod
+    def listar_historico_episodios(usuario_id: int):
+        """Retorna o histórico de episódios visualizados pelo usuário."""
+        sql = """
+            SELECT m.titulo as serie_titulo, e.numero, e.titulo as ep_titulo, ve.status
+            FROM visualizacoes_episodio ve
+            JOIN episodios e ON ve.episodio_id = e.id
+            JOIN temporadas t ON e.temporada_id = t.id
+            JOIN midia m ON t.midia_id = m.id
+            WHERE ve.usuario_id = ?
+            ORDER BY m.titulo, e.numero
+        """
+        conn = get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute(sql, (usuario_id,))
+            return cursor.fetchall()
+        finally:
+            conn.close()

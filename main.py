@@ -289,6 +289,57 @@ def main():
                 usuarios = UsuarioDAO.listar_todos()
                 Interface.exibir_usuarios(usuarios)
 
+            elif sub == "favoritos":
+                from src.dao.lista_dao import ListaDAO
+                favoritos = ListaDAO.buscar_por_nome(user_logado.id, "Favoritos")
+                if not favoritos:
+                    Interface.exibir_mensagem_de_alerta("Você ainda não possui uma lista de Favoritos.")
+                else:
+                    midias = MidiaDAO.listar_por_lista(favoritos["id"])
+                    Interface.exibir_catalogo(midias)
+
+            elif sub == "historico":
+                from src.dao.visualizacao_filme_dao import VisualizacaoFilmeDAO
+                from src.dao.visualizacao_dao import VisualizacaoDAO
+                filmes = VisualizacaoFilmeDAO.listar_historico_filmes(user_logado.id)
+                episodios = VisualizacaoDAO.listar_historico_episodios(user_logado.id)
+                Interface.exibir_historico(filmes, episodios)
+
+            elif sub == "estatisticas":
+                stats = MidiaDAO.obter_estatisticas_gerais() # TODO: Criar método específico para o usuário se necessário
+                Interface.exibir_tela_boas_vindas(user_logado, stats)
+
+            elif sub == "listar-listas":
+                from src.dao.lista_dao import ListaDAO
+                listas = ListaDAO.listar_por_usuario(user_logado.id)
+                if not listas:
+                    Interface.exibir_mensagem_de_alerta("Você ainda não possui listas personalizadas.")
+                    continue
+                else:
+                    Interface.exibir_listas_do_usuario(listas)
+
+            elif sub == "ver-lista":
+                try:
+                    from src.dao.lista_dao import ListaDAO
+                    listas = ListaDAO.listar_por_usuario(user_logado.id)
+                    Interface.exibir_listas_do_usuario(listas)
+                    
+                    if not listas:
+                        continue
+                        
+                    lista_id = int(input("\nID da lista que deseja visualizar: "))
+                    selecionada = next((l for l in listas if l["id"] == lista_id), None)
+                    
+                    if not selecionada:
+                        Interface.exibir_mensagem_erro("Lista não encontrada.")
+                        continue
+                        
+                    midias = MidiaDAO.listar_por_lista(lista_id)
+                    print(f"\n--- MÍDIAS NA LISTA: {selecionada['nome']} ---")
+                    Interface.exibir_catalogo(midias)
+                except ValueError:
+                    Interface.exibir_mensagem_erro("ID inválido.")
+
             elif sub == "criar-lista":
                 try:
                     nome_lista = input("Nome da lista personalizada: ").strip()
@@ -330,6 +381,74 @@ def main():
                     Interface.exibir_mensagem_erro("Por favor, insira um ID válido.")
                 except Exception as e:
                     Interface.exibir_mensagem_erro(f"Erro ao adicionar favorito: {e}")
+
+            elif sub == "adicionar-midia":
+                try:
+                    from src.dao.lista_dao import ListaDAO
+                    listas = ListaDAO.listar_por_usuario(user_logado.id)
+                    Interface.exibir_listas_do_usuario(listas)
+                    if not listas: continue
+                    
+                    lista_id = int(input("\nID da lista de destino: "))
+                    selecionada_lista = next((l for l in listas if l["id"] == lista_id), None)
+                    if not selecionada_lista:
+                        Interface.exibir_mensagem_erro("Lista não encontrada.")
+                        continue
+                        
+                    midias = MidiaDAO.listar_todos()
+                    Interface.exibir_catalogo(midias)
+                    midia_id = int(input("\nID da mídia para adicionar: "))
+                    selecionada_midia = next((m for m in midias if m["id"] == midia_id), None)
+                    if not selecionada_midia:
+                        Interface.exibir_mensagem_erro("Mídia não encontrada.")
+                        continue
+                        
+                    if ListaDAO.adicionar_midia(lista_id, midia_id):
+                        Interface.exibir_mensagem_sucesso(f"'{selecionada_midia['titulo']}' adicionado à lista '{selecionada_lista['nome']}'!")
+                    else:
+                        Interface.exibir_mensagem_erro("Mídia já está na lista ou erro ao adicionar.")
+                except ValueError:
+                    Interface.exibir_mensagem_erro("Entrada inválida.")
+
+            elif sub == "remover-midia":
+                try:
+                    from src.dao.lista_dao import ListaDAO
+                    listas = ListaDAO.listar_por_usuario(user_logado.id)
+                    Interface.exibir_listas_do_usuario(listas)
+                    if not listas: continue
+                    
+                    lista_id = int(input("\nID da lista: "))
+                    selecionada_lista = next((l for l in listas if l["id"] == lista_id), None)
+                    if not selecionada_lista:
+                        Interface.exibir_mensagem_erro("Lista não encontrada.")
+                        continue
+                        
+                    midias = MidiaDAO.listar_por_lista(lista_id)
+                    Interface.exibir_catalogo(midias)
+                    if not midias: continue
+                    
+                    midia_id = int(input("\nID da mídia para remover: "))
+                    if ListaDAO.remover_midia(lista_id, midia_id):
+                        Interface.exibir_mensagem_sucesso("Mídia removida da lista.")
+                    else:
+                        Interface.exibir_mensagem_erro("Mídia não encontrada na lista.")
+                except ValueError:
+                    Interface.exibir_mensagem_erro("Entrada inválida.")
+
+            elif sub == "remover-lista":
+                try:
+                    from src.dao.lista_dao import ListaDAO
+                    listas = ListaDAO.listar_por_usuario(user_logado.id)
+                    Interface.exibir_listas_do_usuario(listas)
+                    if not listas: continue
+                    
+                    lista_id = int(input("\nID da lista para excluir: "))
+                    if ListaDAO.deletar_lista(lista_id):
+                        Interface.exibir_mensagem_sucesso("Lista excluída com sucesso!")
+                    else:
+                        Interface.exibir_mensagem_erro("Lista não encontrada.")
+                except ValueError:
+                    Interface.exibir_mensagem_erro("ID inválido.")
 
         # --- SUBCOMANDOS: SISTEMA ---
         elif entrada.startswith("sistema "):
