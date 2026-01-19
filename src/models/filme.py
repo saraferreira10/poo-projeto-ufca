@@ -49,11 +49,18 @@ class Filme(Midia):
         """
         Calcula a média de avaliações do filme.
         """
-        # TODO: implementar lógica de cálculo da média a partir 
-        return 0.0
+        if not self.id:
+            return 0.0
+        
+        from src.dao.avaliacao_dao import AvaliacaoDAO
+        return AvaliacaoDAO.calcular_media_avaliacoes_midia(self.id)
 
     def __len__(self) -> int:
         """
         Para Filmes, o tamanho da mídia é representada pela sua duração em minutos.
         """
+        print(f"Duração do filme: {self.duracao}")
         return self.duracao
+
+    def __str__(self) -> str:
+        return f"[FILME] {self.titulo} ({self.ano}) - Gênero: {self.genero} | {self.duracao} min"
