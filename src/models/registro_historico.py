@@ -1,6 +1,4 @@
-
 import datetime
-from typing import List
 from src.enums.enums import StatusVisualizacao
 from src.models.midia import Midia
 from src.models.usuario import Usuario

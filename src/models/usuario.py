@@ -8,7 +8,6 @@ class Usuario():
         self._id = None
         self._nome = nome
         self._email = email
-        self._listas_personalizadas = []
 
     # ID
     @property
@@ -39,11 +38,4 @@ class Usuario():
             raise ValueError("E-mail não pode ser vazio")
         self._email = value.strip()
 
-    # LISTAS PERSONALIZADAS    
-    @property
-    def listas_personalizadas(self):
-        return self._listas_personalizadas
- 
-    # HISTORICAL RECORD
-
-    
+    # REGISTRO HISTÓRICO
