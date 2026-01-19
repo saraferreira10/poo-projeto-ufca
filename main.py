@@ -35,7 +35,8 @@ def main():
 
     while True:
         if primeira_execucao:
-            Interface.exibir_tela_boas_vindas()
+            stats = MidiaDAO.obter_estatisticas_gerais()
+            Interface.exibir_tela_boas_vindas(user_logado, stats)
             Interface.exibir_comandos()
             primeira_execucao = False
         else:
@@ -86,8 +87,6 @@ def main():
                         Interface.exibir_mensagem_erro("Mídia não encontrada.")
                         continue
 
-                    user_id = int(input("Informe seu ID de Usuário: "))
-
                     if selecionada["tipo"].upper() == "SERIE":
                         episodios = EpisodioDAO.buscar_por_midia_id(midia_id) 
 
@@ -100,17 +99,26 @@ def main():
                             print(f" ID: {str(ep.id).ljust(3)} | Ep {ep.numero}: {ep.titulo}")
                         
                         ep_id = int(input("\nID do Episódio: "))
-                        nota = int(input("Nota (1-10): "))
+                        nota = int(input("Nota (0-10): "))
+                        
+                        if not (0 <= nota <= 10):
+                            Interface.exibir_mensagem_erro("Nota deve ser entre 0 e 10.")
+                            continue
 
-                        EpisodioNotaDAO.salvar(ep_id, user_id, nota)
+                        EpisodioNotaDAO.salvar(ep_id, user_logado.id, nota)
                         Interface.exibir_mensagem_sucesso("Nota do episódio registrada!")
 
                     else:
-                        nota = int(input(f"Nota para o filme '{selecionada['titulo']}' (1-10): "))
+                        nota = int(input(f"Nota para o filme '{selecionada['titulo']}' (0-10): "))
+                        
+                        if not (0 <= nota <= 10):
+                            Interface.exibir_mensagem_erro("Nota deve ser entre 0 e 10.")
+                            continue
+                        
                         comentario = input("Comentário (opcional): ")
                         
                         nova_avaliacao = Avaliacao(
-                            usuario_id=user_id, 
+                            usuario_id=user_logado.id, 
                             midia_id=midia_id, 
                             nota=nota, 
                             comentario=comentario
@@ -202,7 +210,6 @@ def main():
                         print(f" ID: {str(ep.id).ljust(3)} | Ep {ep.numero}: {ep.titulo}")
 
                     ep_id = int(input("\nID do episódio: "))
-                    user_id = int(input("Informe seu ID de usuário: "))
                     
                     print("\nQual o novo status?")
                     print("[1] NÃO ASSISTIDO")
@@ -221,7 +228,7 @@ def main():
                         Interface.exibir_mensagem_erro("Opção inválida.")
                         continue
 
-                    if VisualizacaoDAO.atualizar_status(ep_id, user_id, novo_status):
+                    if VisualizacaoDAO.atualizar_status(ep_id, user_logado.id, novo_status):
                         Interface.exibir_mensagem_sucesso(f"Episódio {ep_id} agora está como: {novo_status}")
 
                 except ValueError:
@@ -229,61 +236,121 @@ def main():
                 except Exception as e:
                     Interface.exibir_mensagem_erro(f"Erro inesperado: {e}")
 
+        # --- SUBCOMANDOS: FILME ---
+        elif entrada.startswith("filme "):
+            sub = entrada.replace("filme ", "")
+            
+            if sub == "atualizar-status":
+                try:
+                    midias = MidiaDAO.listar_todos()
+                    filmes = [m for m in midias if m["tipo"].upper() == "FILME"]
+                    
+                    if not filmes:
+                        Interface.exibir_mensagem_erro("Nenhum filme cadastrado no catálogo.")
+                        continue
+                    
+                    Interface.exibir_catalogo(filmes)
+                    
+                    midia_id = int(input("\nID do filme para atualizar status: "))
+                    
+                    selecionado = next((f for f in filmes if f["id"] == midia_id), None)
+                    if not selecionado:
+                        Interface.exibir_mensagem_erro("Filme não encontrado ou o ID informado não é um filme.")
+                        continue
+                    
+                    print(f"\n--- ATUALIZAR STATUS: {selecionado['titulo']} ---")
+                    print("[1] NÃO ASSISTIDO")
+                    print("[2] ASSISTINDO")
+                    print("[3] ASSISTIDO")
+                    opcao = input("Escolha uma opção (1-3): ")
+
+                    mapeamento = {
+                        "1": "NÃO ASSISTIDO",
+                        "2": "ASSISTINDO",
+                        "3": "ASSISTIDO"
+                    }
+
+                    novo_status = mapeamento.get(opcao)
+                    if not novo_status:
+                        Interface.exibir_mensagem_erro("Opção inválida.")
+                        continue
+
+                    from src.dao.visualizacao_filme_dao import VisualizacaoFilmeDAO
+                    if VisualizacaoFilmeDAO.atualizar_status(midia_id, user_logado.id, novo_status):
+                        Interface.exibir_mensagem_sucesso(f"Filme '{selecionado['titulo']}' atualizado para: {novo_status}")
+
+                except ValueError:
+                    Interface.exibir_mensagem_erro("Entrada inválida. Use apenas números para IDs e opções.")
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro ao processar atualização: {e}")
+
         # --- SUBCOMANDOS: USUARIO ---
         elif entrada.startswith("usuario "):
             sub = entrada.replace("usuario ", "")
 
             if sub == "criar-lista":
-                Interface.exibir_mensagem_de_todo()
+                try:
+                    nome_lista = input("Nome da lista personalizada: ").strip()
+                    if not nome_lista:
+                        Interface.exibir_mensagem_erro("Nome da lista não pode ser vazio.")
+                        continue
+                    
+                    from src.dao.lista_dao import ListaDAO
+                    lista_id = ListaDAO.criar_lista(user_logado.id, nome_lista)
+                    if lista_id:
+                        Interface.exibir_mensagem_sucesso(f"Lista '{nome_lista}' criada com sucesso!")
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro ao criar lista: {e}")
 
             elif sub == "adicionar-favorito":
-                Interface.exibir_mensagem_de_todo()
+                try:
+                    midias = MidiaDAO.listar_todos()
+                    Interface.exibir_catalogo(midias)
+                    
+                    midia_id = int(input("\nID da mídia para adicionar aos favoritos: "))
+                    selecionada = next((m for m in midias if m["id"] == midia_id), None)
+                    
+                    if not selecionada:
+                        Interface.exibir_mensagem_erro("Mídia não encontrada.")
+                        continue
+                    
+                    from src.dao.lista_dao import ListaDAO
+                    # Busca ou cria lista "Favoritos"
+                    favoritos = ListaDAO.buscar_por_nome(user_logado.id, "Favoritos")
+                    if not favoritos:
+                        ListaDAO.criar_lista(user_logado.id, "Favoritos")
+                        favoritos = ListaDAO.buscar_por_nome(user_logado.id, "Favoritos")
+                    
+                    if ListaDAO.adicionar_midia(favoritos["id"], midia_id):
+                        Interface.exibir_mensagem_sucesso(f"'{selecionada['titulo']}' adicionado aos favoritos!")
+                    else:
+                        Interface.exibir_mensagem_erro("Mídia já está nos favoritos ou erro ao adicionar.")
+                except ValueError:
+                    Interface.exibir_mensagem_erro("Por favor, insira um ID válido.")
+                except Exception as e:
+                    Interface.exibir_mensagem_erro(f"Erro ao adicionar favorito: {e}")
 
-        elif entrada == "filme atualizar-status":
-            try:
-                midias = MidiaDAO.listar_todos()
-                filmes = [m for m in midias if m["tipo"].upper() == "FILME"]
+        # --- SUBCOMANDOS: SISTEMA ---
+        elif entrada.startswith("sistema "):
+            sub = entrada.replace("sistema ", "")
+            
+            if sub == "popular-banco":
+                from src.db.seed import popular_banco
+                popular_banco()
+                Interface.exibir_mensagem_sucesso("Banco de dados populado com sucesso!")
+                user_logado = inicializar_usuario_padrao()
                 
-                if not filmes:
-                    Interface.exibir_mensagem_erro("Nenhum filme cadastrado no catálogo.")
-                    continue
-                
-                Interface.exibir_catalogo(filmes)
-                
-                midia_id = int(input("\nID do filme para atualizar status: "))
-                
-                selecionado = next((f for f in filmes if f["id"] == midia_id), None)
-                if not selecionado:
-                    Interface.exibir_mensagem_erro("Filme não encontrado ou o ID informado não é um filme.")
-                    continue
+            elif sub == "resetar-banco":
+                confirmacao = input("⚠️  TEM CERTEZA? Isso apagará todos os dados! (s/N): ").lower()
+                if confirmacao == 's':
+                    from src.db.dados import resetar_banco
+                    resetar_banco()
+                    Interface.exibir_mensagem_sucesso("Banco de dados limpo!")
+                    user_logado = inicializar_usuario_padrao()
+                else:
+                    print("Operação cancelada.")
 
-                user_id = int(input("Informe seu ID de usuário: "))
-                
-                print(f"\n--- ATUALIZAR STATUS: {selecionado['titulo']} ---")
-                print("[1] NÃO ASSISTIDO")
-                print("[2] ASSISTINDO")
-                print("[3] ASSISTIDO")
-                opcao = input("Escolha uma opção (1-3): ")
 
-                mapeamento = {
-                    "1": "NÃO ASSISTIDO",
-                    "2": "ASSISTINDO",
-                    "3": "ASSISTIDO"
-                }
-
-                novo_status = mapeamento.get(opcao)
-                if not novo_status:
-                    Interface.exibir_mensagem_erro("Opção inválida.")
-                    continue
-
-                from src.dao.visualizacao_filme_dao import VisualizacaoFilmeDAO
-                if VisualizacaoFilmeDAO.atualizar_status(midia_id, user_id, novo_status):
-                    Interface.exibir_mensagem_sucesso(f"Filme '{selecionado['titulo']}' atualizado para: {novo_status}")
-
-            except ValueError:
-                Interface.exibir_mensagem_erro("Entrada inválida. Use apenas números para IDs e opções.")
-            except Exception as e:
-                Interface.exibir_mensagem_erro(f"Erro ao processar atualização: {e}")
         else:
             Interface.exibir_mensagem_opcao_invalida(entrada)
 
