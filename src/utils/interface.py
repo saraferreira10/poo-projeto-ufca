@@ -17,9 +17,9 @@ class Interface:
     @staticmethod
     def exibir_tela_boas_vindas(usuario, estatisticas):
         print(f"\n{Interface.LINHA_DUPLA}")
-        print(f"{' 🎬 CATÁLOGO DE MÍDIAS '.center(Interface.LARGURA, '=')}")
+        print(f"{' 🎬 CATÁLOGO DE MÍDIAS '.center(Interface.LARGURA, '*')}")
         print(f"{Interface.LINHA_DUPLA}")
-        print(f"👤 Usuário: {usuario.name} (ID: {usuario.id})")
+        print(f"👤 Usuário: {usuario.nome} (ID: {usuario.id})")
         
         total = estatisticas.get('total', 0)
         filmes = estatisticas.get('filmes', 0)
@@ -28,7 +28,6 @@ class Interface:
         horas = tempo // 60
         
         print(f"📊 Resumo: {total} mídias | {filmes} filmes | {series} séries | ~{horas}h assistidas")
-        print(f"{Interface.LINHA_SIMPLES}")
 
     @staticmethod
     def exibir_catalogo(midias):

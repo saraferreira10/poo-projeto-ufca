@@ -154,7 +154,6 @@ def criar_tabelas():
 
     conn.commit()
     conn.close()
-    print("Banco de dados criado com sucesso.")
 
 def resetar_banco():
     """Limpa todas as tabelas do banco de dados e reseta autoincrementos."""

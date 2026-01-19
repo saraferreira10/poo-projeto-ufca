@@ -10,26 +10,23 @@ from src.db.dados import criar_tabelas
 from src.models.avaliacao import Avaliacao
 from src.models.episodio import Episodio
 from src.models.temporada import Temporada
-from src.models.user import User
+from src.models.usuario import Usuario
 from src.utils.interface import Interface
 
 def inicializar_usuario_padrao():
     """Garante que existe pelo menos um usuário no sistema para as operações."""
     usuario = UsuarioDAO.buscar_por_id(1)
     if not usuario:
-        usuario_novo = User(name="Usuario Padrao", email="padrao@catalogo.com")
+        usuario_novo = Usuario(nome="Usuario Padrao", email="padrao@catalogo.com")
         UsuarioDAO.salvar(usuario_novo)
         return usuario_novo
     return usuario
 
 def main():
-    print("Sistema de Catálogo de Mídias - CLI Iniciado")
     criar_tabelas()
     
     # Inicializa ou recupera o usuário padrão (ID 1)
     user_logado = inicializar_usuario_padrao()
-    
-    print(f"✅ Sistema inicializado! Logado como: {user_logado.name} (ID: {user_logado.id})")
 
     primeira_execucao = True
 
