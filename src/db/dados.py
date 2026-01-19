@@ -156,5 +156,28 @@ def criar_tabelas():
     conn.close()
     print("Banco de dados criado com sucesso.")
 
+def resetar_banco():
+    """Limpa todas as tabelas do banco de dados e reseta autoincrementos."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA foreign_keys = OFF;")
+        
+        tabelas = [
+            "itens_lista", "listas_personalizadas", "visualizacoes_filme", 
+            "visualizacoes_episodio", "episodio_notas", "avaliacoes", 
+            "episodios", "temporadas", "midia", "usuarios"
+        ]
+        
+        for tabela in tabelas:
+            cursor.execute(f"DELETE FROM {tabela}")
+            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{tabela}'")
+            
+        cursor.execute("PRAGMA foreign_keys = ON;")
+        conn.commit()
+    finally:
+        conn.close()
+    print("Banco de dados resetado com sucesso.")
+
 if __name__ == "__main__":
     criar_tabelas()
