@@ -1,32 +1,32 @@
 from typing import List, Optional
 from src.db.dados import get_connection
-from src.models.user import User
+from src.models.usuario import Usuario
 
 class UsuarioDAO:
     """
-    Data Access Object para a classe User.
+    Data Access Object para a classe Usuario.
     Gerencia as operações de base de dados para utilizadores sem registo histórico.
     """
 
     @staticmethod
-    def _mapear_linha_para_objeto(row) -> Optional[User]:
-        """Converte uma linha da base de dados num objeto User."""
+    def _mapear_linha_para_objeto(row) -> Optional[Usuario]:
+        """Converte uma linha da base de dados num objeto Usuario."""
         if not row:
             return None
         
-        user = User(
-            name=row["nome"],
+        usuario = Usuario(
+            nome=row["nome"],
             email=row["email"]
         )
-        user.id = row["id"]
+        usuario.id = row["id"]
         
-        return user
+        return usuario
 
     @staticmethod
-    def salvar(user: User) -> int:
+    def salvar(usuario: Usuario) -> int:
         """Guarda um novo utilizador na base de dados."""
         sql = "INSERT INTO usuarios (nome, email) VALUES (?, ?)"
-        params = (user.name, user.email) 
+        params = (usuario.nome, usuario.email) 
         
         conn = get_connection()
         try:
@@ -34,7 +34,7 @@ class UsuarioDAO:
             cursor.execute(sql, params)
             
             novo_id = cursor.lastrowid
-            user.id = novo_id
+            usuario.id = novo_id
             
             conn.commit()
             return novo_id
@@ -42,7 +42,7 @@ class UsuarioDAO:
             conn.close()
 
     @staticmethod
-    def buscar_por_id(id: int) -> Optional[User]:
+    def buscar_por_id(id: int) -> Optional[Usuario]:
         """Recupera um utilizador pelo seu ID único."""
         conn = get_connection()
         try:
@@ -54,7 +54,7 @@ class UsuarioDAO:
             conn.close()
 
     @staticmethod
-    def buscar_por_email(email: str) -> Optional[User]:
+    def buscar_por_email(email: str) -> Optional[Usuario]:
         """Busca um utilizador pelo e-mail (chave única)."""
         conn = get_connection()
         try:
@@ -66,7 +66,7 @@ class UsuarioDAO:
             conn.close()
 
     @staticmethod
-    def listar_todos() -> List[User]:
+    def listar_todos() -> List[Usuario]:
         """Retorna uma lista com todos os utilizadores do sistema."""
         conn = get_connection()
         try:
