@@ -58,8 +58,24 @@ class Interface:
 
 
     @staticmethod
-    def exibir_menu_compacto():
+    def exibir_usuarios(usuarios):
+        print(f"\n{'=' * Interface.LARGURA}")
+        print(f"{'USUÁRIOS CADASTRADOS'.center(Interface.LARGURA)}")
+        print(f"{'=' * Interface.LARGURA}")
+
+        if not usuarios:
+            print(f"{'Nenhum usuário cadastrado.'.center(Interface.LARGURA)}")
+        else:
+            for u in usuarios:
+                print(f" ID: {str(u.id).ljust(3)} | Nome: {u.nome.ljust(25)} | Email: {u.email}")
+
+        print(f"{'-' * Interface.LARGURA}\n")
+
+
+    @staticmethod
+    def exibir_menu_compacto(usuario):
         print(f"\n{Interface.LINHA_SIMPLES}")
+        print(f"USUÁRIO LOGADO: {usuario.nome} (ID: {usuario.id})")
         print(f"\n💡 Digite um comando ou 'help' para ver os comandos disponíveis")
         print(f"sair - Encerra o sistema")
         print(f"{Interface.LINHA_SIMPLES}")
@@ -174,6 +190,7 @@ class Interface:
         
         # USUÁRIO
         print(f"\n{'👤 USUÁRIO'.ljust(20)}")
+        print("  > usuario listar             - Lista todos os usuários cadastrados")
         print("  > usuario criar-lista        - Cria uma lista personalizada")
         print("  > usuario adicionar-favorito - Adiciona mídia aos favoritos")
         

@@ -37,7 +37,7 @@ def main():
             Interface.exibir_comandos()
             primeira_execucao = False
         else:
-            Interface.exibir_menu_compacto()
+            Interface.exibir_menu_compacto(user_logado)
 
         entrada = input("\n$ ").strip().lower()
 
@@ -285,7 +285,11 @@ def main():
         elif entrada.startswith("usuario "):
             sub = entrada.replace("usuario ", "")
 
-            if sub == "criar-lista":
+            if sub == "listar":
+                usuarios = UsuarioDAO.listar_todos()
+                Interface.exibir_usuarios(usuarios)
+
+            elif sub == "criar-lista":
                 try:
                     nome_lista = input("Nome da lista personalizada: ").strip()
                     if not nome_lista:
